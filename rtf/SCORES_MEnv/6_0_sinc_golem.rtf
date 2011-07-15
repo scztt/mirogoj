@@ -1,0 +1,130 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf2 // STEREO RAPS TO BE DOUBLED: IN THIS WAY:\cf0 \
+\cf2 // LISTED AS FILENAME: WHICH CLUSTER TO MAPE TO:\cf0 \
+\cf2 // 1/2 : 0/6\cf0 \
+\cf2 // 3/4 : 2/8\cf0 \
+\cf2 // 5/6 : 4/10\cf0 \
+\cf2 // 7/8 : 1/7\cf0 \
+\cf2 // 9/10 : 3/9\cf0 \
+\cf2 // 11/12 : 5/11\cf0 \
+\cf2 //\cf0 \
+\
+\cf3 MiroEnvironment\cf0 .get(\cf4 \\sinc6_golem\cf0 ).push;\
+\
+~init = \{\
+\
+	~outs = \cf3 VirtualSpeakerArray\cf0 .get.getBusNums;\
+\
+	~playSynthDef = \cf3 CtkNoteObject\cf0 (\
+		\cf3 SynthDef\cf0 ( \cf4 \\singleChannelPlayer\cf0 , \{ \cf3 arg\cf0  out=0, dur = 18, buffer, amp = 1;\
+			\cf3 var\cf0  env, src;\
+			env = \cf3 EnvGen\cf0 .kr( \cf3 Env\cf0 ( [0,1,1,0],[0.5, dur, 0.5], \cf4 \\sin\cf0  ), levelScale: amp, doneAction: 2 );\
+			src = V\cf3 DiskIn\cf0 .ar( 1, buffer, BufRateScale.kr(buffer), 0 );\
+			\cf3 Out\cf0 .ar( ~outs, src * env );\
+			\})\
+		);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 	\
+	~ghostBuffer = \cf3 Buffer\cf0 .read( s, \cf5 "/Users/Shared/gradualmente_AntesDespuesYoTuAquellos.aiff"\cf0 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs22 \cf0 \
+	\cf5 "GOLEM INITIALIZED"\cf0 .postln;\
+\};\
+\
+~prepare = \{\
+	~buffer = \cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/GOLEM_GRADUALMENTE_BORGES.aiff"\cf0 , 0, 1);\
+			\
+	~playClock = \cf3 TempoClock\cf0 .new;\
+	~playTask = \
+		\cf3 Task\cf0 (\{ \cf3 |starttime|\cf0 \
+			\cf3 var\cf0  totalDur;\
+			totalDur = 2*60;\
+	\
+			~synth = ~playSynthDef.new(addAction: \cf4 \\head\cf0 , target: \cf3 GroupManager\cf0 .get.synths).buffer_(~buffer);\
+			0.5.wait;\
+			~synth.play;\
+			
+\fs24 ~ghost = \cf3 Ghost\cf0 .newFromBuffer( ~ghostBuffer, 30, s );\
+
+\fs22 			1.wait;\
+			~ghost.play;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 			3.wait;\
+			\
+			~ghost.set( \cf4 \\amp\cf0 , 50, \cf4 \\width\cf0 , 0.6, \cf4 \\fadeTime\cf0 , 5, \cf4 \\rate\cf0 , 1, \cf4 \\rateDev\cf0 , 0, \cf4 \\density\cf0 , 0.75 ); \cf2 // golem borges setting 1\cf0 \
+			5.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs22 \cf0 			~ghostPan1 = \cf3 ElementPanner\cf0 ( ~ghost.ghostBus );\
+			~ghostPan2 = \cf3 ElementPanner\cf0 ( ~ghost.ghostBus );\
+			~ghostPan3 = \cf3 ElementPanner\cf0 ( ~ghost.ghostBus );\
+			~ghostPan4 = \cf3 ElementPanner\cf0 ( ~ghost.ghostBus );\
+			\cf2 // 15 seconds before end\cf0 \
+			2.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 			~ghostPan1.play; \
+			~ghostPan2.play;\
+			~ghostPan3.play; \
+			~ghostPan4.play;\
+			4.wait;\
+			~ghostPan1.updateState( 14, \cf4 \\rect\cf0 , \{ [ 1, 0.5, \cf3 SinOsc\cf0 .kr(2,0,0.5,0.5), 0 ] \} ); \cf2 // granulated regular slow\cf0 \
+			~ghostPan2.updateState( 14, \cf4 \\rect\cf0 , \{ [ 1, 0.5, \cf3 SinOsc\cf0 .kr(\cf3 LFNoise2\cf0 .kr(1,1,2,0.1),0,0.5,0.5), 0 ] \} ); \cf2 // granulated rand slow\cf0 \
+			~ghostPan3.updateState( 14, \cf4 \\perim\cf0 , [1,0.2,1] ); \cf2 // half perimeter NORTH\cf0 \
+			~ghostPan4.updateState( 14, \cf4 \\perim\cf0 , [1,0.8,1] ); \cf2 // half perimeter SOUTH\cf0 \
+			46.wait;\
+			~ghost.set( \cf4 \\amp\cf0 , 50, \cf4 \\width\cf0 , 1, \cf4 \\fadeTime\cf0 , 10, \cf4 \\rate\cf0 , 1, \cf4 \\rateDev\cf0 , 0.1, \cf4 \\density\cf0 , 0 ); \cf2 // golem borges setting 2\cf0 \
+			30.wait;\
+			~ghost.set( \cf4 \\amp\cf0 , 50, \cf4 \\width\cf0 , 0.5, \cf4 \\fadeTime\cf0 , 1, \cf4 \\rate\cf0 , 0.2, \cf4 \\rateDev\cf0 , 0.2, \cf4 \\density\cf0 , 3 );\
+			~\cf3 this\cf0 .prepareNext();\
+			30.wait;\
+			~ghost.set( \cf4 \\amp\cf0 , 0, \cf4 \\width\cf0 , 0.6, \cf4 \\fadeTime\cf0 , 30, \cf4 \\rate\cf0 , 1, \cf4 \\rateDev\cf0 , 0, \cf4 \\density\cf0 , 1.5 );\
+			~\cf3 this\cf0 .playNext();\
+			10.wait;	\
+			~\cf3 this\cf0 .cleanup();
+\fs22 			\
+		\}, ~playClock);\
+\
+	\cf5 "GOLEM PREPARED"\cf0 .postln;\
+\};\
+\
+~play = \{\
+\
+	~playTask.play;\
+	\cf5 "SYNCHRONY PLAYING - GOLEM"\cf0 .postln;\
+\
+\};\
+\
+~free = \{\
+	\
+	~playTask.stop.reset;\
+	~playClock.clear;\
+	~synth.free;\
+	~ghost.free;\
+	
+\fs24 ~ghostPan1.free;\
+	~ghostPan2.free;\
+	~ghostPan3.free;\
+	~ghostPan4.free;
+\fs22 \
+	~playClock.clear;\
+	~buffer.close;\
+	~buffer.free;\
+	~buffer = ~playTask = ~playClock = ~synth = ~ghostPan1 = ~ghostPan2 = 
+\fs24 ~ghostPan3 = ~ghostPan4 =
+\fs22  \cf3 nil\cf0 ;\
+	\cf5 "SYNCHRONY FREEING - GOLEM"\cf0 .postln;\
+\
+\};\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf3 MiroEnvironment\cf0 .get(\cf4 \\sinc6_golem\cf0 ).pop;\
+\cf2 //MiroEnvironment.gui}

@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.43">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p5 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 12.0px Helvetica}
+p.p7 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 85.0px; text-indent: -85.0px; font: 12.0px Helvetica}
+p.p9 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; color: #7a4523}
+p.p10 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco}
+p.p11 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; color: #783a1d}
+p.p12 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 14.0px Helvetica}
+p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+p.p15 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p16 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {color: #0933e8}
+span.s3 {color: #000000}
+span.s4 {color: #0626af}
+span.s5 {color: #606060}
+span.s6 {color: #783a1d}
+span.s7 {color: #0013bb}
+span.s8 {color: #0000bf}
+span.s9 {color: #bf0000}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>AtsSnapShot<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>A snapshot of an AtsFile averaged over specified frames.</b><span class="s1"><b><span class="Apple-tab-span">	</span></b></span></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">Dependencies: AtsFile</p>
+<p class="p3"><br></p>
+<p class="p1">AtsSnapShot extracts frequency and amplitude information from a specified point in an AtsFile.<span class="Apple-converted-space">  </span>The data will be averaged over a specified number of consecutive points centered at the pointer effectively giving you steady-state partial information from the soundfile analyzed by ATS.<span class="Apple-converted-space">  </span>Partials under ampThresh will be excluded, and the surviving partial amplitudes are normalized. Additional manipulation of the data is possible, such as pitch or frequency shifting.</p>
+<p class="p2"><br></p>
+<p class="p1"><b>See also:</b> <a href="../../../../../../src/SuperCollider3/sc3-plugins/build/JoshUGens/help/AtsFile.html"><span class="s2">AtsFile</span></a></p>
+<p class="p2"><br></p>
+<p class="p4"><b>Creation / Class Methods</b></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>*new (path, pointer, framesToAverage, ampThresh, server)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>path </b>- The path to your AtsFile to be parsed.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>pointer </b>- Where in the AtsFile to take the snapshot, from 0 to 1. Default value is 0.5.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>framesToAverage </b>- The number of frames to average frequency and amplitude data. Default value is 3.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>ampThresh </b>- An amplitude threshold below which partials are rejected. Surviving partials are then normalized to 1. Default value is nil. Other information.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>server </b>- Default value is nil, in which case server will be set to the default.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// inline example</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b = <span class="s4">AtsSnapShot</span>.new(<span class="s5">"My/Ats/File.ats"</span>, 0.75, 5, -30.dbamp)</p>
+<p class="p11"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.postData; </span>// see the results of your snapshot</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p12"><b>Accessing Instance and Class Variables</b></p>
+<p class="p7"><span class="Apple-tab-span">	</span></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>freqs</b> - Returns the frequencies of the snapshot in ascending partial order.</p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>amps</b> - Returns the amplitudes of the snapshot in ascending partial order.</p>
+<p class="p7"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>origFreqs</b> - Returns the original frequency information before any transposing, etc. was done to the data.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>origAmps</b> - Returns pre-normalized amplitude data of the snapshot</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p12"><b>Instance Methods</b></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>farm (pointer, framesToAverage, ampThresh)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>AtsFile is farmed for data upon creation of the snapshot, but may be re-farmed with new arguments if the initial results aren't desireable. The newly-farmed data persists.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>pointer </b>- Explanation of pointer. Default value is nil. Other information.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>framesToAverage </b>- Explanation of framesToAverage. Default value is nil. Other information.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>ampThresh </b>- Explanation of ampThresh. Default value is nil. Other information.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b = <span class="s4">AtsSnapShot</span>.new(<span class="s5">"My/Ats/File.ats"</span>, 0.75, 5, -30.dbamp)</p>
+<p class="p11"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.postData; </span>// didn't like the results?</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.farm( 0.7, 3, -45.dbamp );</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.postData; <span class="s6">// better?</span></p>
+<p class="p7"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>postData</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Post the basic data of the snapshot for quick reference.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>test (bw, mul, dur, server)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Test the snapshot with a granulated noise source being filtered by Resonz filters that take the snapshot results as parameters.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>bw </b>- Bandwidth of the Resonz filters. Default value is 0.005. Other information.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>mul </b>- Amplitude of the Resonz test. Default value is 1.5. Other information.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>dur </b>- Length of the test. Default value is 5. Other information.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>server</b> - Optional server argument to test the snapshot on.</p>
+<p class="p5"><br></p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b = <span class="s7">AtsSnapShot</span>.new(<span class="s5">"My/Ats/File.ats"</span>, 0.75, 5, -30.dbamp);</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">Server</span>.default = s = <span class="s7">Server</span>.internal.waitForBoot({ s.scope; b.test(dur: 5, server: s) });</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.test;</p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>transpose (transposeVal, semitone)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Transpose the frequencies of the snapshot by a scalar or by semitone. This is a desctructive change to the data, changing the state of the instance. You may reset to original frequencies by calling <b>.reset</b> on the snapshot.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>transposeVal </b>- A scaler or semitone value to transpose the data by.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>semitone </b>- A boolean. True for semitone transposing, false for scalar values. Default is <b>true</b>.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// inline example</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>g = myAtsSnapShot.transpose(5, <span class="s4">true</span>); <span class="s6">// transpose the partials up a fifth</span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>g.freqs; </span>// freqs are permanently transposed in this snapshot now</p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>transposeAndCopy (transposeVal, semitone)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Like <b>.transponse</b> but returns a new snapshot, leaving the original as it was.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>transposeVal </b>- A scaler or semitone value to transpose the data by.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>semitone </b>- A boolean. True for semitone transposing, false for scalar values. Default is <b>true</b>.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// inline example</p>
+<p class="p10"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>newShiftedSShot = myAtsSnapShot.transposeAndCopy; <span class="s6">// returns a new snapshot</span></p>
+<p class="p9"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>newShiftedSShot.freqs;<span class="Apple-tab-span">	</span></span>// a new snapshot with transposed freqs</p>
+<p class="p11"><span class="s3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>myAtsSnapShot.freqs;<span class="Apple-tab-span">	</span></span>// the original snapshot is unaffected</p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>shift (shiftHz)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Like transpose, but frequency shifting each partial by <b>shiftHz</b>.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>shiftAndCopy (shiftHz)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Returning a new snapshot whose frequencies are shifted equally by <b>shiftHz.</b></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>reset</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Restore the snapshot to its orginal, or most recently farmed state (undoing any frequency shifting or transposing).</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>snapFreqs</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Returns the partial frequencies of the snapshot. Same as mySnapShot.freqs.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>snapAmps</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Returns the partial amplitudes of the snapshot. Same as mySnapShot.amps.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>numSnapPartials</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Returns the number of partials in the snapshot.</p>
+<p class="p7"><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>isolatePartials (first, last)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Returns a array of the partial freqs and amps from the snapshot from <b>first</b> desired partial to <b>last </b>desired partial. The returned data is formatted [ [ freqs ], [ amps ] ].</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>isolatePartialFreqs (first, last)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Same as isolatePartials, but only returns the freqs within the range of <b>first</b> desired partial to <b>last </b>desired partial.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>isolatePartialAmps (first, last)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Same as isolatePartials, but only returns the amps within the range of <b>first</b> desired partial to <b>last </b>desired partial.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>normalizeAmps (normValue)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Normalize the amplitudes to a an amplitude of <b>normValue</b>. Recall the snapshot results are already normalized to 1.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>freqAmpPairs</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Returns an array of frequency/amp pairs of the snapshot.</p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p12"><b>Examples</b></p>
+<p class="p3"><br></p>
+<p class="p13">// Basic functionality</p>
+<p class="p13">// Sending AtsSnapShot only a file name gives you a default snapshot at time 0.5, averaging 3 frames, with an amp threshold of -60.dbamp</p>
+<p class="p14"><span class="s3">b = </span><span class="s8">AtsSnapShot</span><span class="s3">.new(</span>"Your/Ats/File.ats"<span class="s3">)</span></p>
+<p class="p15">b.postData; <span class="s9">// more info</span></p>
+<p class="p13"><span class="s3">b.numSnapPartials; </span>// how many partials did we get?</p>
+<p class="p16"><br></p>
+<p class="p13">// alternatively, create a new AtsSnapShot with your own parameters:</p>
+<p class="p15">b = <span class="s8">AtsSnapShot</span>.new(<span class="s5">"Your/Ats/File.ats"</span>, 0.75, 5, -30.dbamp)</p>
+<p class="p15">b.postData;</p>
+<p class="p13">// re-farm it for new values - this permanently updates the instance's variables</p>
+<p class="p13"><span class="s3">b.farm(0.25, 7, -60.dbamp); </span>//pointer, framesToAverage, ampThreshold</p>
+<p class="p15">b.postData</p>
+<p class="p13">//same</p>
+<p class="p15">b.snapFreqs</p>
+<p class="p15">b.freqs<span class="Apple-converted-space"> <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span></p>
+<p class="p13">//same</p>
+<p class="p15">b.snapAmps</p>
+<p class="p15">b.amps</p>
+<p class="p13">// what was the amp threshold for this snapshot?</p>
+<p class="p15">b.thresh</p>
+<p class="p16"><br></p>
+<p class="p13">// transpose frequencies</p>
+<p class="p15">b.freqs<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">// original</span></p>
+<p class="p15">b.transpose(3, <span class="s8">false</span>).freqs; <span class="Apple-tab-span">	</span><span class="s9">// transpose x 3</span></p>
+<p class="p15">b.reset.freqs<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">// original</span></p>
+<p class="p15">b.transpose(3, <span class="s8">true</span>).freqs; <span class="Apple-tab-span">	</span><span class="s9">// by semitone</span></p>
+<p class="p15">b.reset.freqs<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">// original</span></p>
+<p class="p16"><br></p>
+<p class="p13">// frequency shift values</p>
+<p class="p15">b.freqs<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">// original</span></p>
+<p class="p15">b.shift(500).freqs;<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s9">// shifted</span></p>
+<p class="p13"><span class="s3">b.reset.freqs<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// back to original</p>
+<p class="p16"><br></p>
+<p class="p13">////////////</p>
+<p class="p13">// Transposing, returning a new AtsSnapShot instance</p>
+<p class="p13">////////////</p>
+<p class="p16"><br></p>
+<p class="p15">c = b.transposeAndCopy(5)</p>
+<p class="p15">b.postData</p>
+<p class="p13"><span class="s3">c.postData </span>// amp data intact</p>
+<p class="p15">b.freqs</p>
+<p class="p15">c.freqs</p>
+<p class="p16"><br></p>
+<p class="p13"><span class="s3">( </span>//test</p>
+<p class="p15">b.numSnapPartials.do({ <span class="s8">| i |</span></p>
+<p class="p15"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.freqs.floor.includes( (c.freqs[i] * -5.midiratio).floor ).postln</p>
+<p class="p15"><span class="Apple-tab-span">	</span>})<span class="Apple-converted-space"> </span></p>
+<p class="p15">)</p>
+<p class="p16"><br></p>
+<p class="p15">c = b.shiftAndCopy(25);</p>
+<p class="p15">b.freqs</p>
+<p class="p15">c.freqs</p>
+<p class="p16"><br></p>
+<p class="p13"><span class="s3">( </span>//test</p>
+<p class="p15">b.numSnapPartials.do( { <span class="s8">| i |</span></p>
+<p class="p15"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.freqs.floor.includes( (c.freqs[i] - 25).floor ).postln</p>
+<p class="p15"><span class="Apple-tab-span">	</span>})</p>
+<p class="p15">)</p>
+<p class="p16"><br></p>
+<p class="p13">// The .test method</p>
+<p class="p15"><span class="s8">Server</span>.default = s = <span class="s8">Server</span>.internal.waitForBoot({ s.scope; b = <span class="s8">AtsSnapShot</span>.new(<span class="s5">"/Users/michaelmccrea/Desktop/Stage/Zagreb/testCoro2.ats"</span>); b.test(dur: 5, server: s) });</p>
+<p class="p16"><br></p>
+<p class="p13">// Isolate part of the snapshot</p>
+<p class="p13"><span class="s3">b.isolatePartials(4, 7) <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>// returns [[freqs[4-&gt;7]], [amps[4-7]]]</p>
+<p class="p13"><span class="s3">b.isolatePartialFreqs(4, 7) </span>// returns just [freqs[4-&gt;7]]</p>
+<p class="p15">b.isolatePartialAmps(4, 7) <span class="Apple-tab-span">	</span><span class="s9">// returns just [amps[4-&gt;7]]</span></p>
+<p class="p16"><br></p>
+<p class="p13">// Formatting</p>
+<p class="p13"><span class="s3">b.freqAmpPairs </span>// used by Voice class</p>
+<p class="p16"><br></p>
+<p class="p13">//compare<span class="Apple-converted-space"> </span></p>
+<p class="p13"><span class="s3">b.origAmps.sort </span>// your pre-normalized snapshot</p>
+<p class="p13"><span class="s3">b.amps.sort <span class="Apple-tab-span">	</span><span class="Apple-converted-space">  </span></span>// your normalized snapshot</p>
+<p class="p13">// normalized by a factor of:</p>
+<p class="p15">b.amps.sort / b.origAmps.sort</p>
+<p class="p13">// compare the original value of partial 3 vs. your normalized value of partial 3</p>
+<p class="p15">b.origAmps[3].postln; b.amps[3];<span class="Apple-converted-space"> </span></p>
+<p class="p15">b.origAmps[5].postln; b.amps[5];</p>
+<p class="p15">b.origAmps[13].postln; b.amps[13];</p>
+</body>
+</html>

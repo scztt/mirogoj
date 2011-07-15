@@ -1,0 +1,117 @@
+/*
+ Here's a sample event that shows how the uber-player will work.
+ We need to make all our environments set up in roughly this way.
+ Mike, we already talked about this some....
+ If this is going to be a problem, we need to talk about how to redesign to work something else out.
+
+
+ Conceptually, this should be one Uber-Event in our overall score. 
+ So, the final uber-score will look something like an array:
+	[ 	\introSynchrony,
+		\elementSequence1,
+		\synchrony2,
+		[ \windSequence2, \waterSequence2],
+		\synchrony3,
+	]
+	
+Notice, windSequence2 and waterSequence2 would be played at the same time.
+*/
+
+
+// Run this first, to make \elementSequence1 the current environmenty.
+// This is where you will define everything the uberplayer needs to know about.
+MiroEnvironment.get(\elementSequence1).push();
+
+
+// Whatever is in init will get run ONCE, when everything is started up.
+// These should be things that take a while to load, and only need to be 
+// loaded once. These should be things that DON'T take up server resources...
+// buffers are ok, but no busses, definitely no synths, no tasks.
+~init = {
+	// alloc a buffer
+	// send a synthdef
+	// load a database of names
+}
+
+
+// Prepare contains everything you need to do to get an event READY to play.
+// This would include allocing busses, preparing tasks, even sending synths,
+// so long as they're not playing any sound.
+~prepare = {
+	// get a bus ready
+	// set a task
+	// send a paused synth
+}
+
+// this code should actually kick off the event itself.
+// This should be as minimal as possible - sending a synth or two and playing a task or something,
+// to ensure that this happens /right away/, not after a delay.
+~play = {
+	// start playback of a task
+	// send a synth
+	// etc...	
+}
+
+// This should stop playback and free everything allocated during ~prepare and ~play.
+// Basically, this should take us back to the ~init state.
+// If you set any ~variables in ~play or ~prepare, set them to nil in here after
+// freeing.
+~free = {
+	
+}
+
+/*
+things will get played throughout the entire time the show us up like:
+	~event.init
+	~event.prepare
+	~event.play
+	~event.free
+	~event.prepare
+	~event.play
+	~event.free
+	etc....
+So it's important that the ~free ALWAYS gets you back to your initial state, and
+you can run this over and over with no garbage being left behind, no problems, etc, 
+because... that's what we'll essentially be doing when we hit play.
+
+Three more EXTREMELY important things...
+You've got a "score" for a synchrony... how do you signal that it's finished, and playback should go to the
+next thing?
+This prepares the next event:
+	~this.prepareNext()
+This starts the next event playing:
+	~this.playNext()
+Note - if you want overlap between two parts, you can call ~this.playNext() in A to start
+playback in B before playback in A is done.
+Finally, when your event is completely finished, and you want to signal the uber-player to do all the cleanup stuff
+(essentially, to run the ~free function), call ~this.cleanup();
+DON'T call ~free yourself, though, always call ~this.cleanup() to signal that you're done.
+Also, don't worry too much about calling ~this.prepareNext() - if you don't call it, the next even still gets prepared automatically. This is just there in case something needs an EXTRA long time to prepare - we'll use it if we need it.
+So, your list of events / score might look something like:
+	play a note
+	play a note
+	play a crescendo sound!
+	~this.playNext() (at this point, the next synchrony starts)
+	fade current sound out
+	play really quiet for a minute or so
+	~this.cleanup()
+*/
+
+//Finally, declare your variables as ~environmentVariables.
+//And, end with 
+MiroEnvironment.get(\elementSequence1).pop();
+// To ditch \elementSequence1 as your current environment
+
+// And, this is nice for testing:
+MiroEnvironment.gui
+
+// The player:
+p = MiroPlayer([
+	[ \test1 ],
+	[ \synch1 ],
+	[ \elementSequence1 ]
+]);
+
+p.play;
+p.stop;
+p.getLogWindow;

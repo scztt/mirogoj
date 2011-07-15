@@ -1,0 +1,58 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
+{\fonttbl\f0\fnil\fcharset0 LucidaSans;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf2 // We put all of our initialization stuff in here, so we can stick \ul (*MiroInitialize)\ulnone  at the top of any file,\cf0 \
+\cf2 // and can simply click it to initialize /everything/. We can modify it as we go along to add new\cf0 \
+\cf2 // initialization actions, etc. \cf0 \
+\
+\cf2 // Boot the server\cf0 \
+\
+\cf2 //~north = NetAddr("127.0.0.1", 57201);\cf0 \
+\cf2 //~south = NetAddr("127.0.0.1", 57202);\cf0 \
+\cf2 //s = BroadcastServer(\\miroServer, ~north, nil, 0).addresses_([~north]);\cf0 \
+\cf2 //s.makeWindow;\cf0 \
+s = \cf3 Server\cf0 .internal;\
+\
+\cf2 //d = BroadcastServer(\\miroServer, ~south, nil, 0).addresses_([~north, ~south]);\cf0 \
+\cf2 //d.makeWindow;\cf0 \
+\cf2 //d.boot;\cf0 \
+\
+\cf3 Server\cf0 .default = s;\
+s.options.memSize = 8192*16;\
+s.reboot;\
+s.waitForBoot(\{\
+	\cf3 Routine\cf0  \{\
+		s.sync();\
+		\cf3 GroupManager\cf0 .get(s).addFromArray(\
+			 [\
+				\cf4 \\controls\cf0 ,\
+				\cf4 \\synths\cf0  -> [\
+					 \cf4 \\elements\cf0 , \
+					 \cf4 \\other\cf0  \
+				],\
+				\cf4 \\synchronies\cf0 ,\
+				\cf4 \\elementPanners\cf0 ,\
+				\cf4 \\speakerfx\cf0 ,\
+				\cf4 \\speakers\cf0 ,\
+				\cf4 \\listener\cf0 \
+			]).play;\
+		s.sync();\
+\
+		\cf2 // Init the virtual speaker array\cf0 \
+		v = \cf3 VirtualSpeakerArray\cf0 .newFromFile(s);\
+		v.listenerPos = 200@400;\
+		v.listenerAngle = 0.25;\
+\
+		\cf3 ElementPanner\cf0 .init( s );\
+	\
+		\cf2 //n = BreathArray(s).addNodesFromGroupings( v.groupings );\cf0 \
+		\cf3 VirtualSpeakerArrayUI\cf0 ( v );\
+	\
+		v.play;\
+		s.sync();\
+		\cf2 //n.play;\cf0 \
+	\}.play(\cf3 AppClock\cf0 );\
+\})}

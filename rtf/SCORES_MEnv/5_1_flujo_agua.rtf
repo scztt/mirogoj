@@ -1,0 +1,160 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green115\blue0;\red96\green96\blue96;
+\red191\green0\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf2 MiroEnvironment\cf0 .get(\cf3 \\flujo5_agua\cf0 ).push;\
+\
+~init = \{\
+\
+	~data = \cf2 FileReader\cf0 .read(\cf4 "/Users/Shared/db_allMirogoj_dodDESC_ww1"\cf0 .standardizePath, \cf2 true\cf0 , \cf2 true\cf0 , delimiter: $|);\
+	\
+	~data.size.do(\{ \cf2 |i|\cf0 \
+		\cf2 var\cf0  name, temp, finalname;\
+		finalname=[];\
+		name = ~data[i][1].split($ );\
+		temp=\cf4 ""\cf0 ;\
+		(name[0].size-3).do(\{ \cf2 |i|\cf0  temp=temp++name[0][i+3] \});\
+		name[0] = temp;\
+		block\{ \cf2 |break|\cf0 \
+			name.do(\{ \cf2 |me|\cf0  ( me.asFloat > 0 ).if(\
+					\{ finalname = finalname.add(me.asFloat) \},\
+					\{ break.value() \})\
+				\});\
+			\};\
+		~data[i] = [~data[i][0].asFloat, finalname];\
+		\});\
+\
+	\cf4 "INITIATED FLUX 5 - WATER"\cf0 .postln;\
+\};\
+\
+~prepare = \{\
+\
+ 	~prepClock = \cf2 TempoClock\cf0 .new;\
+ 	~prepTask = \{		\
+		\cf2 Task\cf0 (\{	\
+			~busses = [	\cf2 Bus\cf0 .alloc(\cf3 \\audio\cf0 , numChannels:1) ]; \
+			\
+			\cf5 ////	ADD SNAPSHOTS	//////\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf5 //			~shot = AtsSnapShot.new("/Users/Shared/zee.ats", 0.5, 5, -25.dbamp);\cf0 \
+			0.2.wait;\
+			\
+			\cf5 ////	CONFIRM BUSSES, DATAS	//////\cf0 \
+			~waters = [	\cf2 Water\cf0 .new(s, ~busses[0].bus, ~data)];\
+			0.3.wait;\
+			\
+			\cf5 ////	ADD VOICES, CONFIRM BUSSES, SHOTS //////\cf0 \
+\cf5 //			~voices = [	Voice.new(s, ~waters[0], 0, ~shot,  16.dbamp, 0.01, 2.5, 3) ];\cf0 \
+			\
+			~pans = ~busses.collect(\{ \cf2 |bus|\cf0  \cf2 ElementPanner\cf0 .new(bus.bus) \});\
+			0.3.wait;\
+			\
+			~watersScore = [\
+				[\
+					[ 3, \{	~pans[0].updateState( 10, \cf3 \\perim\cf0 , [1,0.2,1] ) \} ], \cf5 // half perimeter NORTH\cf0 \
+					[ 50, \{	~pans[0].updateBehavior( 10, \cf3 \\jittery3\cf0 , (\cf3 \\speed\cf0 : 2, \cf3 \\freq\cf0 :0.05, \cf3 \\amount\cf0 : 1, \cf3 \\spread\cf0 : 0.2) ) \}], \cf5 // rand amp nuances on NORTH perimeter\cf0 \
+					[ 80, \{	~pans[0].updateState( 45, \cf3 \\perim\cf0 , [1,0.8,1] ) \} ], \cf5 // half perimeter SOUTH\cf0 \
+					[ 90,	\{	~waters[0].updateState( 22, 1, 20, 0.35, 0.5, 0.1, 3) \} ], \cf5 // water dripping\cf0 \
+					[ 180,	\{	~waters[0].updateState( 40, 20, 3, 0.5, 0.1, 0.4, 3 ) \} ], \cf5 // sink 1\cf0 \
+					[ 225, \{	~pans[0].updateBehavior( 10, \cf3 \\jittery3\cf0 , (\cf3 \\speed\cf0 : 0.075, \cf3 \\amount\cf0 : 1, \cf3 \\spread\cf0 : 0.8, \cf3 \\pos\cf0 : 0.8) ) \}], \cf5 // rand amp nuances on SOUTH perimeter\cf0 \
+					[ 360, \{ 	~pans[0].updateState( 60, \cf3 \\rect\cf0 , [1,0.5,0.5,1] ) \}], \cf5 // al rectangulo\cf0 \
+					[ 410,	\{	~waters[0].updateState( 20, 5, 2500, 0.6, 0.2, 0.35, 5 ) \} ], \cf5 // pitchy gurgle\cf0 \
+					[ 430,	\{	~pans[0].updateBehavior( 15, \cf3 \\toCenterPoint\cf0 , [10]) \}], \cf5 // al oeste del rectangulo central\cf0 \
+					[ 450, \{	~pans[0].updateBehavior( 15, \cf3 \\leftAndRight_slow\cf0  ) \}], \cf5 // oscilacion lenta regular entre oeste y este del rectangulo central\cf0 \
+					[ 540,	\{	~waters[0].updateState( 15, 25, 3, 1, 5.8, 0.5, 0.24) \}], \cf5 // feedback\cf0 \
+					[ 540, \{	\cf4 "fb started"\cf0 .postln	\}], \cf5 // feedback\cf0 \
+					[ 576,	\{	~waters[0].updateState( 15, 250, 4.5, 1.1, 1.4, 0.4, 0.47 ) \}], \cf5 // machine\cf0 \
+					[ 590,	\{	~waters[0].updateState( 15, 2000, 3, 0.5, 0.9, 0.4, 0.5 ) \}], \cf5 // dark low current\cf0 \
+					[ 590,	\{	~pans[0].updateState( 20, \cf3 \\perim\cf0 , [1.0,0.1,0] ) \} ], \cf5 // Cluster 01 Extremo NorOeste\cf0 \
+					[ 620,	\{	~pans[0].updateState( 20, \cf3 \\perim\cf0 , [1.0,0.5,0.1] ) \} ], \cf5 // Cristo\cf0 \
+					[ 643,	\{	~\cf2 this\cf0 .prepareNext() \} ],\
+					[ 650, \{	~pans[0].updateState( 20, \cf3 \\perim\cf0 , [1,0.5,3] ) \}], \cf5 // ALL THE PERIMETER\cf0 \
+					[ 745, \{	~\cf2 this\cf0 .playNext() \} ],\
+					[ 750, \{	~waters[0].free	\}],\
+					[ 851, \{	~this.cleanup()	\}]\
+				]			\
+			\cf5 //////////	ADD ~THIS.PREPARENEXT AND ~THIS.CLEANUP //////////\cf0 \
+			];\
+			\
+			\
+			~finishedFlag = \cf2 false\cf0 ;\
+			\
+			\cf5 ////	MAKE SURE NUMBER OF COLLECTED SCORES CORRESPONDS TO THE NUMBER OF WINDS //////\cf0 \
+			~waterTasks = 1.collect(\{ \cf2 | waterIndex |\cf0 \
+				\cf2 var\cf0  thisClock;\
+				thisClock = \cf2 TempoClock\cf0 .new;\
+					\cf2 Task\cf0 (\{ \cf2 |starttime|\cf0 \
+						\cf2 var\cf0  update, srcdex, now, offset, finished;\
+						update = 2; \cf5 // update time for the task to check the score\cf0 \
+						srcdex = 0;\
+						now = 0.0;\
+						offset = 0.0;\
+						finished = \cf2 false\cf0 ;\
+						\cf4 "checking water "\cf0 .post; waterIndex.post; \cf4 "'s "\cf0 .post; ~watersScore[ waterIndex ].size.post; \cf4 " breakpoints for offest"\cf0 .postln;\
+						~watersScore[ waterIndex ].size.do(\{ \cf2 | i |\cf0 \
+							(offset > ~watersScore[waterIndex][i][0]).if(\{ srcdex = srcdex + 1 \});\
+						\});\
+						\cf4 "water "\cf0 .post; waterIndex.post; \cf4 " is starting at breakpoint "\cf0 .post; srcdex.postln;\
+\
+						~waters[waterIndex].play;\
+						1.wait;\
+\
+						block(\{ \cf2 | break |\cf0 \
+							\cf2 inf\cf0 .do(\{ \
+								\cf2 var\cf0  state;\
+								now = \cf2 thisThread\cf0 .beats - starttime + offset;\
+								finished.not.if(\{\
+									(now > ~watersScore[ waterIndex ][srcdex][0]).if(\{\
+											state = ~watersScore[ waterIndex ][srcdex][1];\
+											try\{ s.makeBundle(\cf2 nil\cf0 , state) \};\
+											srcdex = srcdex + 1;\
+											\cf4 "score "\cf0 .post; waterIndex.post; \cf4 " advancing to "\cf0 .post; srcdex.postln;\
+											(srcdex == ~watersScore[ waterIndex ].size).if(\{\
+												finished = \cf2 true\cf0 ;\
+												~finishedFlag = \cf2 true\cf0 ;\
+												\cf4 "this water's score is FINISHED: "\cf0 .post; waterIndex.postln;\
+												break.value();\
+											\});\
+									\});\
+								\});\
+								update.wait;\
+							\});\
+						\});	\
+					\}, thisClock);\
+			\}); \
+			1.5.wait;\
+			\cf4 "prepare complete for FLUX 5 - WATER"\cf0 .postln;\
+		\}, ~prepClock);\
+	\};\
+	~prepTask.value.play;\
+\
+\};\
+\
+~play = \{\
+\
+	~pans.do( \cf2 _\cf0 .play );	\
+	~waterTasks.do( \cf2 _\cf0 .play );\
+\
+\};\
+\
+~free = \{\
+\
+	~busses.do(\cf2 _\cf0 .free);\
+	~pans.do(\cf2 _\cf0 .free);\
+	~prepClock.clear;\
+	~waterTasks.do(\{ \cf2 | task |\cf0  task.stop.reset; task.clock.clear\});\
+		~finishedFlag.not.if(\{\
+		\cf4 "finished early"\cf0 .postln;		\
+		~waters.do(\{ \cf2 |water|\cf0  water.killNow \});\
+		\cf5 //~voices.do(\{ |voice| voice.killNow \});\cf0 \
+	\});\
+	~busses = ~waters = ~pans = ~prepTask = ~prepClock = ~waterTasks = ~watersScore = ~finishedFlag = \cf2 nil\cf0 ;\
+	\
+\};\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 MiroEnvironment\cf0 .get(\cf3 \\flujo5_agua\cf0 ).pop;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf5 //MiroEnvironment.gui}

@@ -1,0 +1,151 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red191\green0\blue0;\red0\green0\blue191;
+\red0\green115\blue0;\red0\green115\blue0;\red0\green0\blue191;\red191\green0\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf2 \
+\cf3 // Some test source audio\cf2 \
+~test = \cf4 NodeProxy\cf2 .new( s, \cf5 \\audio\cf2 , 1 )\
+~test.source = \{ \cf4 WhiteNoise\cf2 .ar(20) \}\
+\
+\cf3 // Create a new panner for this source\cf2 \
+\cf3 // usage = ElementPanner.new( inputBus )\cf2 \
+~pan = \cf4 ElementPanner\cf2 .new( ~test.index );\
+\cf3 //~pan = ElementPanner.new(~busses);\cf2 \
+~pan.play;\
+~pan.free;\
+\cf3 /*\
+	ElementPanner has two regions, \\rect and \\perim\
+	\\rect is the center rectangle, \\perim is the outer perimeter speakers\
+	\\rect has four parameters: \
+		[ amplitude (0..1),\
+		  x (0..1),\
+		  y (0..1),\
+		  width (0..1) ]\
+	\\perim has three parameters: \
+		[ amplitude (0..1),\
+		  pos (0..1),\
+		  width (0..1) ]\
+*/\cf2 \
+\
+\cf3 ///////////////////////////////////////////////////////////\cf2 \
+\cf3 // Setting regions and positions\cf2 \
+\cf3 // usage: panner.updateState( fadeTime, region, settings )\cf2 \
+\
+\cf3 // Move to middle of rectangle over ten seconds\cf2 \
+~pan.updateState( 1, \cf5 \\rect\cf2 , [0.05,0.5,0.5,0] )\
+\
+\cf3 // Move to north side of perimeter over ten seconds\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,0.1,0] ) \cf3 // Cluster 01\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,0.1,0.5] ) \cf3 // Cluster 01 & 02\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,0.1,0.75] ) \cf3 // Cluster 01 & 02 & 03\cf2 \
+\cf3 // Move to south side of perimeter over ten seconds\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,1,0.1] ) \cf3 // Cluster 10\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,1,0.5] ) \cf3 // Cluster 10 & 11\cf2 \
+\cf3 // Move to east side of perimeter over ten seconds\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,0.5,1] ) \cf3 // Cluster 03, 05, 06, 08, 09, 12\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , [1,0.5,0.1] ) \cf3 // Cristo\cf2 \
+\
+\cf3 // Position settings can be a function, as long as it spits out the appropriate number of values:\cf2 \
+\cf3 // Panning x parameter back and forth in rect\cf2 \
+~pan.updateState( 10, \cf5 \\rect\cf2 , \{ [ 0.05, \cf4 SinOsc\cf2 .kr(1,0,0.5,0.5), 0.5, 0 ] \} )\
+\cf3 // Panning y parameter north and south in rect\cf2 \
+\cf0 ~pan.updateState( 20, \cf6 \\rect\cf0 , \{ [ 0.05, 0.5, \cf7 SinOsc\cf0 .kr(1,0,0.5,0.5), 0 ] \} ) \cf8 // windshield medium speed\cf0 \
+~pan.updateState( 20, \cf6 \\rect\cf0 , \{ [ 0.05, 0.5, \cf7 SinOsc\cf0 .kr(5,0,0.5,0.5), 0 ] \} ) \cf8 // less granulated\cf2 \
+~pan.updateState( 20, \cf5 \\rect\cf2 , \{ [ 0.05, 0.5, \cf4 SinOsc\cf2 .kr(10,0,0.5,0.5), 0 ] \} ) \cf3 // granulated\cf2 \
+~pan.updateState( 10, \cf5 \\rect\cf2 , \{ [ 1, 0.5, \cf4 SinOsc\cf2 .kr(20,0,0.5,0.5), 0 ] \} ) \cf3 // even more granulated\cf2 \
+~pan.updateState( 10, \cf5 \\rect\cf2 , \{ [ 0.05, 0.5, \cf4 SinOsc\cf2 .kr(0.05,0,0.5,0.5), 0 ] \} ) \cf3 // centered, regular lento\cf2 \
+~pan.updateState( 1, \cf5 \\rect\cf2 , \{ [ 0.05, 0.5, \cf4 LFNoise2\cf2 .kr(0.25,0.5,0.5,0.5), 0 ] \} ) \cf3 // centered rand lento\cf2 \
+~pan.updateState( 10, \cf5 \\rect\cf2 , \{ [ 0.05, 0.9, \cf4 LFNoise2\cf2 .kr(0.25,0.75,0.5,0.5), 0.15 ] \} ) \cf3 // centeredEast, rand lento\
+\cf0 ~pan.updateState( 1, \cf6 \\rect\cf0 , \{ [ 0.05, 0.2, \cf7 LFNoise2\cf0 .kr(0.25,0.5,0.5,0.5), 0 ] \} ) \cf8 // centeredWest, rand lento\cf2 \
+\cf3 // Changing the width while in perimeter\cf2 \
+~pan.updateState( 1, \cf5 \\perim\cf2 , \{ [ 1, 0.5, \cf4 SinOsc\cf2 .kr(1,0,0.5,0.5) ] \} )\
+\
+\cf3 /////////////////////////////////////////////////////////////////\cf2 \
+\cf3 // Complex behaviors can be saved and referred to by name\cf2 \
+\cf3 // usage: ElementPanner.addBehavior( region, name, behavior )\cf2 \
+\
+\cf3 /////////////////////////////////////////////////////////////////\cf2 \
+\cf3 // Adding presets\cf2 \
+\cf3 // Adding the two previous examples:\cf2 \
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\centered\cf2 , [ 1, 0.5, 0.5, 0 ] );\
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\centeredCl02\cf2 , [ 1, 0, 0, 0 ] );\
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\centeredNorth\cf2 , [ 1, 0, 0, 1 ] );\
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\centeredSouth\cf2 , [ 1, 1, 1, 1 ] );\
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\leftAndRight\cf2 , \{ [ 1, \cf4 SinOsc\cf2 .kr(1,0,0.5,0.5), 0.5, 0 ] \} );\
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\perim\cf2 , \cf5 \\widthOsc\cf2 , \{ [ 1, 0.5, \cf4 SinOsc\cf2 .kr(1,0,0.5,0.5) ] \} );\
+\
+\cf4 ElementPanner\cf2 .saveBehaviors;\
+\
+\cf3 // Switching to behaviors\cf2 \
+\cf3 // usage: panner.updateBehavior( fadeTime, behavior, optional arguments )\cf2 \
+~pan.updateBehavior( 10, \cf5 \\leftAndRight\cf2  )\
+~pan.updateBehavior( 10, \cf5 \\widthOsc\cf2  )\
+~pan.updateBehavior( 10, \cf5 \\centered\cf2  )\
+~pan.updateBehavior( 10, \cf5 \\centeredNorth\cf2  )\
+~pan.updateBehavior( 10, \cf5 \\centeredSouth\cf2  )\
+\cf3 // Behaviors can also take arguments, to make them more flexible\cf2 \
+\cf3 // This takes speed as an argument\cf2 \
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\jittery\cf2 , \
+	\{ \
+		\cf4 arg\cf2  speed=100;\
+		\cf4 var\cf2  amp;\
+		amp = \cf4 LFNoise2\cf2 .kr( speed );\
+		[amp, 0.5, 0.5, 0]\
+	\});\
+\
+~pan.updateBehavior( 10, \cf5 \\jittery\cf2 , 1 );\
+~pan.updateBehavior( 10, \cf5 \\jittery\cf2 , 100 );\
+\
+\cf3 // A more complex example, with two arguments:\cf2 \
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\jittery2\cf2 , \{ \
+	\cf4 arg\cf2  speed=100, amount=0.5;\
+	\cf4 var\cf2  amp;\
+	amp = \cf4 LFNoise2\cf2 .kr( speed, amount, 0.5 );\
+	[amp, 0.5, 0.5, 0]\
+\});\
+\
+\cf3 // Multiple arguments are passed in by array...\cf2 \
+~pan.updateBehavior( 1, \cf5 \\jittery2\cf2 , [10,0.1] );\
+~pan.updateBehavior( 1, \cf5 \\jittery2\cf2 , [1,0.1] );\
+\cf3 // or by name:\cf2 \
+~pan.updateBehavior( 1, \cf5 \\jittery2\cf2 , (\cf5 \\amount\cf2 :1));\
+\
+\cf3 // An example of a gesture in the \\rect region, using envelopes\cf2 \
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\rect\cf2 , \cf5 \\toCenterPoint\cf2 , \{ \
+	\cf4 arg\cf2  duration=10;  \cf3 // duration parameter, so it's easy to change the speed of the gesture\cf2 \
+	\cf4 var\cf2  amp, x, y, width;\
+	amp = 1;\
+	x = \cf4 EnvGen\cf2 .kr( \cf4 Env\cf2 ([1, 0],[1]), timeScale:duration ); \cf3 // right side to left side\cf2 \
+	y = 0.5; \cf3 // in center\cf2 \
+	width = \cf4 EnvGen\cf2 .kr( \cf4 Env\cf2 ([1,0],[1]), timeScale:duration ); \cf3 // spread out -> point\cf2 \
+	[amp, x, y, width]\
+\});\
+\
+~pan.updateState( 10, \cf5 \\rect\cf2 , [1,0.5,0.5,1] );\
+~pan.updateBehavior( 1, \cf5 \\toCenterPoint\cf2 , [10]);\
+~pan.updateState( 10, \cf5 \\rect\cf2 , [1,0.5,0.5,1] );\
+~pan.updateBehavior( 1, \cf5 \\toCenterPoint\cf2 , [1]);\
+\
+\
+\cf3 // Behaviors get saved to a file. This files is in AppSupport/SC/Extensions/Mirogoj/Data\cf2 \
+\cf3 // They're automatically loaded next time you use an element pannner.\cf2 \
+\cf3 // Back it up occasionally, so you don't lose everything\cf2 \
+\cf4 ElementPanner\cf2 .saveBehaviors()\
+\
+\cf4 ElementPanner\cf2 .behaviorsDict[\cf5 \\rect\cf2 ]\
+\
+\
+\
+\cf3 // Marching\cf2 \
+\cf4 ElementPanner\cf2 .addBehavior( \cf5 \\perim\cf2 , \cf5 \\marching\cf2 , \{ \
+	\cf4 arg\cf2  freq=1, spread=0.5;\
+	\cf4 var\cf2  pos = \cf4 SinOsc\cf2 .kr( \cf4 LFNoise2\cf2 .kr( 1, 0.3, freq), 0, 0.5, 0.5 );\
+	[1, pos, 0]\
+\});\
+\
+~pan.updateBehavior( 1, \cf5 \\marching\cf2  );\
+~pan.updateBehavior( 10, \cf5 \\marching\cf2 , (\cf5 \\freq\cf2 :1.5) );\
+~pan.updateBehavior( 10, \cf5 \\marching\cf2 , (\cf5 \\freq\cf2 :0.5, \cf5 \\spread\cf2 : 0.1) );\
+}

@@ -1,0 +1,184 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red96\green96\blue96;\red0\green115\blue0;
+\red191\green0\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf0 \
+(\
+\cf2 var\cf0  a, n, window, view, meterArray, inputText, refreshButton, peakText, ampText, busNumText;\
+\cf2 var\cf0  inputsArray, monitorSynth, monitorSynthFunc, xPos,\
+	logClip, clipValues, logClipScheds, inputs;\
+\
+window = \cf2 SCWindow\cf0 (\cf3 "Metering and WTF window"\cf0 , \cf2 Rect\cf0 (0, 400, 500, 270 ));\
+\
+inputText = \cf2 SCTextView\cf0 .new(window,\cf2 Rect\cf0 (10, 210, 340, 50))\
+	.resize_(8)\
+	.enterInterpretsSelection_(\cf2 false\cf0 )\
+	.string_(\cf3 "v.speakers.collect( _.busNum )"\cf0  )\
+	.keyUpAction_(\{\
+		\cf2 | a,b,c,key |\cf0 \
+		if( key==3, \{\
+			refreshButton.action.value( refreshButton );\
+		\})\
+	\});\
+\pard\pardeftab560\ql\qnatural
+\cf0 \
+inputsArray = (1..20);\
+meterArray = \cf2 List\cf0 .new;\
+\
+monitorSynthFunc = \{\
+	\cf2 SynthDef\cf0 ( \cf4 \\meters\cf0 , \{ \
+		\cf2 | reset |\cf0 \
+		\cf2 var\cf0  sigs, amp, peak, pulse;\
+		\cf2 SeedMaster\cf0 .ugen;\
+		sigs = \cf2 InFeedback\cf0 .ar( inputsArray );\
+		pulse =  \cf2 Impulse\cf0 .kr(10);\
+		\cf2 SendReply\cf0 .kr(pulse, \cf4 '/levels'\cf0 , sigs.collect(\{\
+			\cf2 | sig |\cf0 \
+			\cf2 var\cf0  peak;\
+			peak = \cf2 A2K\cf0 .kr( \cf2 Peak\cf0 .ar(sig, pulse) ).lag(0,3);\
+			[ \cf2 RunningMax\cf0 .kr( \cf2 Amplitude\cf0 .kr(sig, 0.0001), pulse ), peak ];\
+		\}).flatten );	\
+		\cf2 DC\cf0 .ar(0);\
+	\}).send(s);\
+\};\
+monitorSynthFunc.value();\
+\
+o = \cf2 OSCresponder\cf0 (s.addr, \cf4 '/levels'\cf0 , \{\cf2 arg\cf0  time, resp, msg;\
+	\{\
+		inputsArray.do(\{\
+			\cf2 | input, i |\cf0 \
+			meterArray[i].value = msg[i*2+3].ampdb.linlin(-40, 0, 0, 1);\
+			meterArray[i].peakLevel = msg[i*2+4].ampdb.linlin(-40, 0, 0, 1);	\
+			ampText[i].string = msg[i*2+3].ampdb.round(0.01);\
+			if( msg[i*2+4]>1, \{\
+				logClip.value( i, input, msg[i*2+4] );\
+				peakText[i].background_(\cf2 Color\cf0 .red);\
+			\},\{\
+				peakText[i].background_(\cf2 Color\cf0 .clear)\
+			\});\
+			peakText[i].string = msg[i*2+4].ampdb.round(0.01);\
+		\});\
+	\}.defer;\
+\}).add;\
+window.onClose = \{ o.remove; monitorSynth.free; \};\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 refreshButton = \cf2 SCButton\cf0 .new(window,\cf2 Rect\cf0 (370, 240, 110, 20))\
+	.states_([ \
+		[ \cf3 "Refresh"\cf0 , \cf2 Color\cf0 (1.0, 1.0, 1.0, 1.0), \cf2 Color\cf0 (0.0, 0.0, 1.0, 1.0) ] ])\
+	.resize_(9)\
+	.action_(\{\
+		\cf2 |v|\cf0 \
+		\cf2 var\cf0  input, newMeters, newPeakText, newAmpText, newBusNumText, r;\
+		inputsArray = \cf2 List\cf0 .new;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf5 //		try \{\cf0 \
+			input = inputText.string.interpret;\
+			input.isKindOf( \cf2 Collection\cf0  ).if(\{\
+				inputsArray = input.collect(\{\
+					\cf2 | in |\cf0 \
+					case\
+						\{ in.isKindOf( \cf2 SimpleNumber\cf0  ) \} \{ in \}\
+						\{ in.isKindOf( \cf2 Bus\cf0  ) \} \{ in.index \}\
+						\{ in.isKindOf( \cf2 CtkAudio\cf0  ) \} \{ in.bus \}\
+				\});\
+			\},\{\
+				inputsArray = case\
+					\{ input.isKindOf( \cf2 SimpleNumber\cf0  ) \} \{ input \}\
+					\{ input.isKindOf( \cf2 Bus\cf0  ) \} \{ input.index \}\
+					\{ input.isKindOf( \cf2 CtkAudio\cf0  ) \} \{ input.bus \}\
+			\});\
+			monitorSynth.free;\
+			monitorSynthFunc.value();\
+			\{\
+				monitorSynth = \cf2 Synth\cf0 .basicNew( \cf4 \\meters\cf0 , s, if( s.isKindOf( \cf2 BroadcastServer\cf0  ), \{100\}, \{101\} ) );\
+				s.addr.sendBundle( \cf2 nil\cf0 , monitorSynth.newMsg );\
+			\}.defer(0.5);\
+	\
+			meterArray.do( \cf2 _\cf0 .remove );\
+			peakText.do( \cf2 _\cf0 .remove );\
+			ampText.do( \cf2 _\cf0 .remove );\
+			busNumText.do( \cf2 _\cf0 .remove );\
+			newMeters = \cf2 List\cf0 .new;\
+			newAmpText = \cf2 List\cf0 .new;\
+			newPeakText = \cf2 List\cf0 .new;\
+			newBusNumText = \cf2 List\cf0 .new;\
+			\
+			clipValues = \cf2 Array\cf0 .newClear( inputsArray.size ).fill(0);\
+			logClipScheds = \cf2 Array\cf0 .newClear( inputsArray.size );\
+			\
+			xPos = 10;\
+\pard\pardeftab560\ql\qnatural
+\cf0 			inputsArray.do(\{\
+				\cf2 | in |\cf0 \
+				a = \cf2 SCLevelIndicator\cf0 (window, \cf2 Rect\cf0 (xPos, 20, 20, 160));\
+				a.resize=4;\
+				a.warning = -2;\
+				a.style = 4;\
+				a.background = \cf2 Color\cf0 .grey(0.2);\
+				a.drawsPeak = \cf2 true\cf0 ;\
+				a.numSteps = 32;\
+				a.image = \{\
+					j = \cf2 SCImage\cf0 .new(16,2);\
+					j.draw(\{ \cf2 arg\cf0  image;\
+						\cf2 var\cf0  lozenge;\
+						lozenge = \cf2 Rect\cf0 (0, 0, 16, 2);\
+						\cf2 Pen\cf0 .addRect(lozenge);\
+						\cf2 Pen\cf0 .fillColor_(\cf2 Color\cf0 .green(0.8));\
+						\cf2 Pen\cf0 .fill();\
+					\});\
+					j\
+				\}.value;\
+				newMeters.add( a );\
+				newPeakText.add( \cf2 SCStaticText\cf0 .new( window, \cf2 Rect\cf0 (xPos,4,20,16) )\
+					.string_(\cf3 "0.76"\cf0 )\
+					.font_( \cf2 Font\cf0 (\cf3 "Verdana"\cf0 , 8));\
+				);\
+				newAmpText.add( \cf2 SCStaticText\cf0 .new( window, \cf2 Rect\cf0 (xPos,180,20,16) )\
+					.string_(\cf3 "0.76"\cf0 )\
+					.font_( \cf2 Font\cf0 (\cf3 "Verdana"\cf0 , 8));\
+				);\
+				newBusNumText.add( \cf2 SCStaticText\cf0 .new( window, \cf2 Rect\cf0 (xPos,190,20,16) )\
+					.string_(in)\
+					.align_(\cf4 \\center\cf0 )\
+					.font_( \cf2 Font\cf0 (\cf3 "Verdana-Bold"\cf0 , 8));\
+				);\
+				xPos = xPos + 25;\
+			\});\
+			newPeakText.do( _.resize_(1) );\
+			newAmpText.do( _.resize_(7) );\
+			newBusNumText.do( _.resize_(7) );\
+			meterArray = newMeters;\
+			ampText = newAmpText;\
+			peakText = newPeakText;\
+			busNumText = newBusNumText;\
+			r = \cf2 Rect\cf0 (0,0,0,0);\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 			(meterArray ++ busNumText).do(\{\
+				\cf2 | child |\cf0 \
+				r = r.union( child.bounds );\
+				r.postln;\
+			\});\
+			window.bounds_( r.resizeBy(5,65).origin_( window.bounds.origin ) );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf5 //		\}\cf0 \
+	\});\
+\
+logClip = \{\
+	\cf2 arg\cf0  meter, bus, value;\
+	( logClipScheds[ meter ].isNil or: \{ logClipScheds[ meter ].isPlaying.not \} ).if(\{\
+		logClipScheds[ meter ] = \{ \
+			5.wait; 				\
+			format( \cf3 "channel % clipped! ( bus:%, value:% dB )"\cf0 , meter, bus, value.ampdb.round(0.001) ).log(\cf4 \\levels\cf0 );\
+			clipValues[ meter ] = 0;\
+		\}.fork( \cf2 AppClock\cf0  );\
+	\});\
+	clipValues[ meter ] = clipValues[ meter ].max( value );\
+\};\
+\
+window.front;\
+refreshButton.action.value();\
+)\
+}

@@ -1,0 +1,202 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green0\blue0;\red0\green115\blue0;
+\red96\green96\blue96;\red191\green0\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf2 MiroEnvironment\cf3 .get(\cf4 \\flujo3_vientos\cf3 ).push;\
+\
+~init = \{\
+\
+	~data = \cf2 FileReader\cf3 .read(\cf5 "/Users/Shared/db_polje_1_25_ageASC_Age_Cipher_gen03"\cf3 .standardizePath, \cf2 true\cf3 , \cf2 true\cf3 , delimiter: $|); \cf6 // 134 nombres\cf3 \
+	\
+	~data.size.do(\{ \cf2 |i|\cf3 \
+		\cf2 var\cf3  name, temp, finalname;\
+		finalname=[];\
+		name = ~data[i][1].split($ );\
+		temp=\cf5 ""\cf3 ;\
+		(name[0].size-3).do(\{ \cf2 |i|\cf3  temp=temp++name[0][i+3] \});\
+		name[0] = temp;\
+		block\{ \cf2 |break|\cf3 \
+			name.do(\{ \cf2 |me|\cf3  ( me.asFloat > 0 ).if(\
+					\{ finalname = finalname.add(me.asFloat) \},\
+					\{ break.value() \})\
+				\});\
+			\};\
+		~data[i] = [~data[i][0].asFloat, finalname];\
+		\});\
+		\
+		\cf6 // second data set\cf3 \
+	~data2 = \cf2 FileReader\cf3 .read(\cf5 "/Users/Shared/db_polje_25_166_ageASC_Age_Cipher_gen03"\cf3 .standardizePath, \cf2 true\cf3 , \cf2 true\cf3 , delimiter: $|);\
+	\
+	~data2.size.do(\{ \cf2 |i|\cf3 \
+		\cf2 var\cf3  name, temp, finalname;\
+		finalname=[];\
+		name = ~data2[i][1].split($ );\
+		temp=\cf5 ""\cf3 ;\
+		(name[0].size-3).do(\{ \cf2 |i|\cf3  temp=temp++name[0][i+3] \});\
+		name[0] = temp;\
+		block\{ \cf2 |break|\cf3 \
+			name.do(\{ \cf2 |me|\cf3  ( me.asFloat > 0 ).if(\
+					\{ finalname = finalname.add(me.asFloat) \},\
+					\{ break.value() \})\
+				\});\
+			\};\
+		~data2[i] = [~data2[i][0].asFloat, finalname];\
+		\});\
+	\
+	\cf5 "WIND INITIALIZED - FLUX 3"\cf3 .postln;\
+\};\
+\
+~prepare = \{\
+\
+ 	~prepClock = \cf2 TempoClock\cf3 .new;\
+ 	~prepTask = \{		\
+		\cf2 Task\cf3 (\{	\
+			~busses = [\
+				\cf2 Bus\cf3 .alloc(\cf4 \\audio\cf3 , numChannels:1), \
+				\cf2 Bus\cf3 .alloc(\cf4 \\audio\cf3 , numChannels:1)\
+				]; \
+			\
+			\cf6 ////	ADD SNAPSHOTS	//////\cf3 \
+			~shot = \cf2 AtsSnapShot\cf3 .new(\cf5 "/Users/Shared/zee.ats"\cf3 , 0.5, 5, -25.dbamp);\
+			~shot1 = \cf2 AtsSnapShot\cf3 .new(\cf5 "/Users/Shared/zee.ats"\cf3 , 0.5, 5, -25.dbamp);\
+			0.2.wait;\
+			\
+			\cf6 ////	CONFIRM BUSSES, DATAS	//////\cf3 \
+			~winds = [	\cf2 Wind\cf3 .new(s, ~busses[0].bus, ~data), \
+						\cf2 Wind\cf3 .new(s, ~busses[1].bus, ~data2)];\
+			0.3.wait;\
+			\
+			\cf6 ////	ADD VOICES, CONFIRM BUSSES, SHOTS //////\cf3 \
+\cf6 //			~voices = [	Voice.new(s, ~winds[0], 0, ~shot,  16.dbamp, 0.01, 2.5, 3), \cf3 \
+\cf6 //						Voice.new(s, ~winds[1], 0, ~shot1,  16.dbamp, 0.01, 2.5, 3)];\cf3 \
+			\
+			~pans = ~busses.collect(\{ \cf2 |bus|\cf3  \cf2 ElementPanner\cf3 .new(bus.bus) \});\
+			0.3.wait;\
+			\
+			~windsScore = [\
+				[	\cf6 // 	WIND 1\cf3 \
+					[ 1,	\{	~winds[0].updateState( 10, 25, 100, 5000, 65) \}],\
+					[ 1,	\{	~winds[0].gustWeights_( [0.75, 0.05, 0.05, 0.05, 0.05, 0.05] ) \}],\
+						\cf6 // perimeter rand windshield muy lento\cf3 \
+			\cf6 //		[ 1, \{	~pans[0].updateBehavior( 10, \\marching, (\\freq:0.005, \\spread: 0.1) ) \}], \cf3 \
+					[ 1, \{	~pans[0].updateState( 60, \cf4 \\perim\cf3 , [1,1,0] ) \}], \cf6 // Cluster 10\cf3 \
+					[ 100, \{   ~pans[0].updateState( 60, \cf4 \\perim\cf3 , [1,0.6875,0] ) \}], \cf6 // Cluster 12\cf3 \
+					[ 220, \{	~pans[0].updateState( 60, \cf4 \\perim\cf3 , [1,0.8125,0] )\}], \cf6 // Cluster 11\cf3 \
+					[ 300,	\{	~winds[0].updateState( 10, 125, 100, 5000, 65) \}],\
+					[ 300,	\{	~winds[0].gustWeights_( [0.75, 0.05, 0.05, 0.05, 0.05, 0.05] ) \}],\
+						\cf6 // perimeter rand windshield muy lento\cf3 \
+			\cf6 //		[ 300, \{	~pans[0].updateBehavior( 10, \\marching, (\\freq:0.005, \\spread: 0.1) ) \}], 					[ 400, \{	~pans[0].updateState( 60, \\perim, [1,1,0] ) \}], // Cluster 10\cf3 \
+					[ 520, \{   ~pans[0].updateState( 60, \cf4 \\perim\cf3 , [1,0.6875,0] ) \}], \cf6 // Cluster 12\cf3 \
+					[ 590, \{	~pans[0].updateState( 60, \cf4 \\perim\cf3 , [1,0.8125,0] )\}], \cf6 // Cluster 11\cf3 \
+					[ 660,	\{	~winds[0].free; \} ]\
+				],\
+				[	\cf6 // 	WIND 2\cf3 \
+					[ 1,	\{	~winds[1].updateState( 10, 35, 1000, 8000, 45) \}],\
+					[ 1,	\{	~winds[1].gustWeights_( [0.05, 0.05, 0.05, 0.75, 0.05, 0.05] ) \}],\
+			\cf6 //		[ 1, 	\{	~pans[1].updateBehavior( 10, \\marching, (\\freq:0.005) ) \}], // perimeter rand windshield muy lento\cf3 \
+					[ 1,	 \{	~pans[1].updateState( 60, \cf4 \\perim\cf3 , [1,0.3125,0] )\}], \cf6 // Cluter 03\cf3 \
+					[ 100,	\{	~pans[1].updateState( 60, \cf4 \\perim\cf3 , [1,0.1875,0] )\}], \cf6 // Cluter 02\cf3 \
+					[ 200, \{	~pans[1].updateState( 60, \cf4 \\perim\cf3 , [1,0,0] )\}], \cf6 // Cluter 01\cf3 \
+					[ 200,	\{	~winds[1].updateState( 30, 5000, 90, 750, 60, 1 ) \}],\
+					[ 200,	\{	~winds[1].gustWeights_( [0.05, 0.05, 0.05, 0.05, 0.75, 0.05] ) \}],\
+			\cf6 //		[ 300,	\{	~winds[1].updateState( 1, 35, 100, 3000, 45 ) \}],\cf3 \
+					[ 300,	\{	~winds[1].gustWeights_( [0.05, 0.05, 0.05, 0.75, 0.05, 0.05] ) \}],\
+			\cf6 //		[ 300, \{	~pans[1].updateBehavior( 10, \\marching, (\\freq:0.005) ) \}], // perimeter rand windshield muy lento\cf3 \
+					[ 300, \{	~pans[1].updateState( 60, \cf4 \\perim\cf3 , [1,0.3125,0] )\}], \cf6 // Cluter 03\cf3 \
+					[ 300,	\{	~winds[1].updateState( 30, 5000, 90, 750, 60 ) \}],\
+					[ 400,	\{	~pans[1].updateState( 60, \cf4 \\perim\cf3 , [1,0.1875,0] )\}], \cf6 // Cluter 02\cf3 \
+					[ 500, \{	~pans[1].updateState( 60, \cf4 \\perim\cf3 , [1,0,0] )\}], \cf6 // Cluter 01\cf3 \
+					[ 510, \{	~\cf2 this\cf3 .prepareNext() \}], \
+					[ 600,	\{	~winds[1].updateState( 30, 50, 90, 750, 60 ) \}],\
+					[ 600,	\{	~winds[1].gustWeights_( [0.05, 0.05, 0.05, 0.05, 0.75, 0.05] ) \}],\
+					[ 620, \{	~\cf2 this\cf3 .playNext() \}], \
+					[ 660,	\{	~winds[1].free \} ]\
+				]\
+			\
+			\cf6 //////////	ADD ~THIS.PREPARENEXT AND ~THIS.CLEANUP //////////\cf3 \
+			];\
+\
+			~finishedFlag = \cf2 false\cf3 ;\
+\
+			\cf6 ////	MAKE SURE NUMBER OF COLLECTED SCORES CORRESPONDS TO THE NUMBER OF WINDS //////\cf3 \
+			~windTasks = 2.collect(\{ \cf2 | windIndex |\cf3 \
+				\cf2 var\cf3  thisClock;\
+				thisClock = \cf2 TempoClock\cf3 .new;\
+					\cf2 Task\cf3 (\{ \cf2 |starttime|\cf3 \
+						\cf2 var\cf3  update, srcdex, now, offset, finished;\
+						update = 2; \cf6 // update time for the task to check the score\cf3 \
+						srcdex = 0;\
+						now = 0.0;\
+						offset = 0.0;\
+						finished = \cf2 false\cf3 ;\
+						\cf5 "checking wind "\cf3 .post; windIndex.post; \cf5 "'s "\cf3 .post; ~windsScore[ windIndex ].size.post; \
+							\cf5 " breakpoints for offest"\cf3 .postln;\
+						~windsScore[ windIndex ].size.do(\{ \cf2 | i |\cf3 \
+							(offset > ~windsScore[windIndex][i][0]).if(\{ srcdex = srcdex + 1 \});\
+						\});\
+						\cf5 "wind "\cf3 .post; windIndex.post; \cf5 " is starting at breakpoint "\cf3 .post; srcdex.postln;\
+\
+						~winds[ windIndex ].play;\
+			\
+						block(\{ \cf2 | break |\cf3 \
+							\cf2 inf\cf3 .do(\{ \
+								\cf2 var\cf3  state;\
+								now = \cf2 thisThread\cf3 .beats - starttime + offset;\
+								\
+								finished.not.if(\{\
+									(now > ~windsScore[ windIndex ][srcdex][0]).if(\{\
+											state = ~windsScore[ windIndex ][srcdex][1];\
+											try\{ s.makeBundle(\cf2 nil\cf3 , state) \};\
+											srcdex = srcdex + 1;\
+											\cf5 "score "\cf3 .post; windIndex.post; \cf5 " advancing to "\cf3 .post; srcdex.postln;\
+											(srcdex == ~windsScore[ windIndex ].size).if(\{\
+												finished = \cf2 true\cf3 ;\
+												~finishedFlag = \cf2 true\cf3 ;\
+												\cf5 "this wind's score is FINISHED: "\cf3 .post; windIndex.postln;\
+												break.value();\
+											\});\
+										\});\
+									\});\
+								update.wait;\
+							\});\
+						\});	\
+					\}, thisClock);\
+			\}); \
+			\
+			\cf5 "prepare complete for FLUX 3 - WINDS"\cf3 .postln;\
+		\}, ~prepClock);\
+	\};\
+	~prepTask.value.play;\
+	\
+	\cf5 "WIND PREPARED - FLUX 3"\cf3 .postln;\
+\
+\};\
+\
+~play = \{\
+\
+	~pans.do( \cf2 _\cf3 .play );	\
+	~windTasks.do( \cf2 _\cf3 .play );\
+\
+\};\
+\
+~free = \{\
+\
+	~busses.do(\cf2 _\cf3 .free);\
+	~pans.do(\cf2 _\cf3 .free);\
+	~prepClock.clear;\
+	~windTasks.do(\{ \cf2 | task |\cf3  task.stop.reset; task.clock.clear\});\
+	\
+	~finishedFlag.not.if(\{\
+		\cf5 "finished early"\cf3 .postln;		\
+		~winds.do(\{ \cf2 |wind|\cf3  wind.killNow \});\
+		\cf6 //~voices.do(\{ |voice| voice.killNow \});\cf3 \
+	\});\
+\
+	~busses = ~winds = ~voices = ~pans = ~prepTask = ~shot1 = ~shot2 = ~prepClock = ~windTasks = ~windsScore = ~finishedFlag = \cf2 nil\cf3 ;\
+	\
+\};\
+\
+\cf2 MiroEnvironment\cf3 .get(\cf4 \\flujo3_vientos\cf3 ).pop;\
+\cf6 //MiroEnvironment.gui}

@@ -1,0 +1,119 @@
+var o, p;
+o = [
+	IdentityDictionary.prNew,  Array.prNew(32),  IdentityDictionary.prNew,  Array.prNew(32),  
+	{ [ 1, 0.5, SinOsc.kr(1,0,0.5,0.5) ] },  { 
+	arg freq=1, spread=0.5;
+	var pos = SinOsc.kr( LFNoise2.kr( 0.9, 0.6, freq), 0, 0.5, 0.5 );
+	[1, pos, 0]
+},  { 
+	arg freq=1, spread=0.5;
+	var pos = LFNoise2.kr( 0.1, 0.9, freq);
+	[1.0, pos, 1]
+},  { 
+	arg freq=1, spread=0.5;
+	var pos = LFNoise2.kr( 0.5, 1.0, freq);
+	[0.05, pos, 0]
+},  
+	{ 
+	arg freq=1, spread=0.5;
+	var pos = SinOsc.kr( LFNoise2.kr( 1, 0.05, freq), 0, 0.5, 0.5 );
+	[1, pos, 0]
+},  { 
+	arg freq=1, spread=0.5;
+	var pos = SinOsc.kr( LFNoise2.kr( 0.5, 0.05, freq), 0, 0.5, 0.5 );
+	[1, pos, 0]
+},  { 
+	arg speed=100, amount=0.5, spread = 0.5, freq = 1, pos = 0.2;
+	var amp;
+	amp = LFNoise2.kr( speed, amount, 0.5 );
+	//pos = SinOsc.kr( LFNoise2.kr( 1, 0.05, freq), 0, 0.5, 0.5 );
+	[amp, pos, spread]
+},  IdentityDictionary.prNew,  
+	Array.prNew(64),  { 
+		arg speed=100;
+		var amp;
+		amp = LFNoise2.kr( speed );
+		[amp, 0.5, 0.5, 0]
+	},  { [ 1, SinOsc.kr(1,0,0.5,0.5), 0.5, 0 ] },  Array.prNew(4),  
+	{ [ 1, LFNoise2.kr(2,1,0,0.5), LFNoise2.kr(3,1,0,0.5), 0 ] },  Array.prNew(4),  { [ 1, SinOsc.kr(LFNoise2.kr(2,0,0.5,0.5), 0, 0.5), SinOsc.kr(LFNoise2.kr(3,0,0.5,0.5), 0, 0.5), 0 ] },  Array.prNew(4),  
+	{ 
+	arg speed=100, amount=0.5;
+	var amp;
+	amp = LFNoise2.kr( speed, amount, 0.5 );
+	[amp, 0.5, 0.5, 0]
+},  { [ 1, SinOsc.kr(0.05,0,0.5,0.5), 0.5, 0 ] },  Array.prNew(4),  { [ 1, SinOsc.kr(LFNoise2.kr(2,0,0.5,0.5), 0, 0.5), SinOsc.kr(LFNoise2.kr(3,0,0.5,0.5), 0, 0.5), 0 ] },  
+	Array.prNew(4),  { 
+	arg duration=10;  // duration parameter, so it's easy to change the speed of the gesture
+	var amp, x, y, width;
+	amp = 1;
+	x = EnvGen.kr( Env([1, 0],[1]), timeScale:duration ); // right side to left side
+	y = 0.5; // in center
+	width = EnvGen.kr( Env([1,0],[1]), timeScale:duration ); // spread out -> point
+	[amp, x, y, width]
+},  Array.prNew(4),  Array.prNew(4),  
+	{ [ 1, SinOsc.kr(LFNoise2.kr(2,1,0), 0, 0.5), SinOsc.kr(LFNoise2.kr(3,1,0), 0, 0.5), 0 ] }
+];
+p = [
+	// IdentityDictionary
+	0, [ array: o[1],  size: 2,  
+		proto: nil,  parent: nil,  
+		know: false ],  
+	// Array
+	1, [ nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  'perim',  o[2],  
+		nil,  nil,  nil,  nil,  
+		'rect',  o[11],  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil ],  
+	// IdentityDictionary
+	2, [ array: o[3],  size: 7,  
+		proto: nil,  parent: nil,  
+		know: false ],  
+	// Array
+	3, [ nil,  nil,  'widthOsc',  o[4],  
+		'medialunaSur',  o[5],  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  'circling',  o[6],  
+		'floating',  o[7],  'marching',  o[8],  
+		'medialunaNorte',  o[9],  'jittery3',  o[10],  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil ],  
+	// IdentityDictionary
+	11, [ array: o[12],  size: 16,  
+		proto: nil,  parent: nil,  
+		know: false ],  
+	// Array
+	12, [ nil,  nil,  nil,  nil,  
+		'jittery',  o[13],  'leftAndRight',  o[14],  
+		'centeredCl02',  o[15],  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  'leftAndRight_mechanic2',  o[16],  
+		nil,  nil,  'centeredWestern',  o[17],  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		'leftAndRight_fast',  o[18],  'centered',  o[19],  
+		nil,  nil,  'jittery2',  o[20],  
+		'leftAndRight_slow',  o[21],  'centeredEastern',  o[22],  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  'leftAndRight_mechanic',  o[23],  
+		'centeredNorth',  o[24],  'toCenterPoint',  o[25],  
+		'centeredEestern',  o[26],  'centeredSouth',  o[27],  
+		nil,  nil,  'leftAndRight_mechanic3',  o[28] ],  
+	// Array
+	15, [ 1,  0,  0,  0 ],  
+	// Array
+	17, [ 1,  0,  0.5,  0 ],  
+	// Array
+	19, [ 1,  0.5,  0.5,  0 ],  
+	// Array
+	22, [ 1,  1,  0.5,  0 ],  
+	// Array
+	24, [ 1,  0.5,  0,  0 ],  
+	// Array
+	26, [ 0.05,  0.5,  0,  0 ],  
+	// Array
+	27, [ 1,  0.5,  1,  0 ]
+];
+prUnarchive(o,p);

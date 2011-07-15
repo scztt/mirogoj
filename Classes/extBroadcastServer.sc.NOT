@@ -1,0 +1,12 @@
++ BroadcastServer {		
+	performOn {
+		| index, func |
+		var oldAddr;
+		broadcast = false;
+		oldAddr = addr;
+		addr = this.at(index);
+		func.value;
+		addr = oldAddr;
+		broadcast = true;
+	}
+}

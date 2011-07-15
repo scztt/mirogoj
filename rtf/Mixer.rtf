@@ -1,0 +1,29 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fnil\fcharset0 BitstreamVeraSans-Roman;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue179;\red128\green0\blue0;\red179\green0\blue179;
+\red102\green0\blue102;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 ~ampBus = \cf2 Bus\cf0 .alloc( \cf3 \\control\cf0 , s, \cf4 40 \cf0 );\
+~ampMixer = \{ \
+	[\cf4 1\cf0 ,\cf4 2\cf0 ,\cf4 3\cf0 ,\cf4 4\cf0 ];\
+\}.play;\
+\
+~iphoneoscout = \cf2 NetAddr\cf0 (\cf5 "192.168.21.1"\cf0 , \cf4 57130\cf0 );\
+~iphoneoscin = \cf2 NetAddr\cf0 (\cf5 "192.168.21.1"\cf0 , \cf2 nil\cf0 );\
+~mixer = \cf2 MMixer\cf0 ( ~ampMixer, ~ampBus, s );\
+\
+\cf2 OSCresponder\cf0 ( ~iphoneoscin, \cf5 "
+\f1\fs18 /mixernorth/fader0"
+\f0\fs24 \cf0 , \{ \
+	\cf2 | time, node, msg |\cf0 \
+	\cf5 "\\n\\n\\n\\n"\cf0 .postln;\
+	msg.postln\
+\}).add;\
+\
+~mixer.faders.do(\{\
+	\cf2 | fader, i |\cf0 \
+	VirtualSpeakerArray.get.speakers[i].synth.map(\\amp, \cf2 ~ampBus\cf0 .subBus(i,\cf4 1\cf0 ) );\
+\});\
+\
+~ampBus.debugScope;}

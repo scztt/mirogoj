@@ -1,0 +1,57 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf440
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fnil\fcharset77 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red191\green0\blue0;\red0\green115\blue0;
+}
+\deftab720
+\pard\pardeftab720\ql\qnatural
+
+\f0\fs24 \cf0 	g = \cf2 GroupManager\cf0 .new( s )\
+\
+	n1 = \cf2 SomeSynth\cf0 ( target: g.notes )\
+	n2 = \cf2 SomeSynth\cf0 ( target: g.notes )	\
+	fx = \cf2 Reverb\cf0 ( target: g.effects )\
+\
+\cf3 /*\
+That's it - GroupManager acts as a dictionary, where you can access groups by name, and ones that don't yet exist are created automatically. GroupManager.play() knows how to initialize all the groups in the correct order, so you won't get any "group not found" errors.\
+\
+It comes in very handy for creating complex groups and subgroups (which you can pass in using the syntax for dictionaries/events). Observe:\
+*/\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1 \cf0 	~structure = [\
+		\cf4 \\synths -> [\
+			 \\a, \
+			 \\b \
+		],\cf0 \
+		\cf4 \\synchronies\cf0 ,\
+		\cf4 \\speakerfx,\
+\cf0 		\cf4 \\speakers\cf0 ,\
+\cf4 		\\listener\cf0 \
+	] \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 \
+	g = \cf2 GroupManager\cf0 .newStructure( s, ~structure )\
+\
+\cf3 // Obviously, \\generators has three subgroups, etc etc. Now, you can:\cf0 \
+\
+	g.insertTarget = \cf4 \\generators\cf0 \
+	aNoise = \cf2 SomeSynth\cf0 ( group: g.noise )\
+	t1\'ca= \cf2 SomeSynth\cf0 ( group: g.tankSounds )\
+	t2\'ca= \cf2 SomeSynth\cf0 ( group: g.tankSounds )\
+	t3\'ca= \cf2 SomeSynth\cf0 ( group: g.tankSounds )\
+\cf3 // ( Adds three new synths to the tankSounds group, which is a subgroup of \\generators. Even though tankSounds wasn't part of your original spec, it's added automatically to the tail of g.insertTarget - the \\generators group )\cf0 \
+\
+\
+\cf3 //This would explicitly add a new group that is a child of an existing one:\cf0 \
+	g.newGroup( \cf4 \\newGroup\cf0 , target: g.effects )\
+	g.newGroup \'ca \cf3 // CtkGroup()\cf0 \
+\
+\cf3 // This would instantiate all the groups, in the correct order (i.e. starting with the ones at the head first):\cf0 \
+	g.play();\
+\
+\cf3 // And, of course, since it uses CtkGroups, you can do all the normal cool things like:\cf0 \
+	g.tankSounds.set( \cf4 \\out\cf0 , tankBus );\
+	g.tankSounds.set( \cf4 \\amp\cf0 , 0.3 );\
+	g.generators.deepFree  \cf3 // Free's all synth subnodes, but leaves subgroups intact.\cf0 \
+}
