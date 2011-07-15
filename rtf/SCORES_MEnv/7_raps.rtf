@@ -1,0 +1,208 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
+{\fonttbl\f0\fnil\fcharset0 Monaco;\f1\fnil\fcharset0 LucidaSans;\f2\fnil\fcharset0 LucidaGrande;
+}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red0\green115\blue0;\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf2 // STEREO RAPS TO BE DOUBLED: IN THIS WAY:\cf3 \
+\cf2 // LISTED AS FILENAME: WHICH CLUSTER TO MAPE TO:\cf3 \
+\cf2 // 1/2 : 0/6\cf3 \
+\cf2 // 3/4 : 2/8\cf3 \
+\cf2 // 5/6 : 4/10\cf3 \
+\cf2 // 7/8 : 1/7\cf3 \
+\cf2 // 9/10 : 3/9\cf3 \
+\cf2 // 11/12 : 5/11\cf3 \
+\cf2 //\cf3 \
+\
+\cf4 MiroEnvironment\cf3 .get(\cf5 \\raps\cf3 ).push;\
+\
+~init = \{\
+\
+	~vg = \cf4 VirtualSpeakerArray\cf3 .get.groupings;\
+	~leftChannels = [\
+		~vg[0].atAll([0,2]),\
+		~vg[6].atAll([0,2]),\
+		~vg[2].atAll([0,2]),\
+	\
+		~vg[8].atAll([0]),\
+		~vg[4].atAll([0,2]),\
+		~vg[10].atAll([0]),\
+		\
+		~vg[1].atAll([0,2]),\
+		~vg[7].atAll([0,2]),\
+		~vg[3].atAll([0]),\
+		\
+		~vg[9].atAll([0,2]),\
+		~vg[5].atAll([0]),\
+		~vg[11].atAll([0,2])\
+	];\
+	\
+	~rightChannels = [\
+		~vg[0].atAll([1,3]),\
+		~vg[6].atAll([1]),\
+		~vg[2].atAll([1,3]),\
+		\
+		~vg[8].atAll([0]),\
+		~vg[4].atAll([1,3]),\
+		~vg[10].atAll([1,3]),\
+		\
+		~vg[1].atAll([1,3]),\
+		~vg[7].atAll([1,3]),\
+		~vg[3].atAll([1,2]),\
+		\
+		~vg[9].atAll([1,3]),\
+		~vg[5].atAll([0]),\
+		~vg[11].atAll([1,3])\
+	];\
+	\
+	~rightChannels = ~rightChannels.collect( \cf4 _\cf3 .collect( \cf4 _\cf3 .busNum ) );\
+	~leftChannels = ~leftChannels.collect( \cf4 _\cf3 .collect( \cf4 _\cf3 .busNum ) );\
+\
+	\cf4 SynthDef\cf3 ( \cf5 \\Stereo12ChanBellPlayer\cf3 , \{\
+		\cf4 | amp, dur=20 |\cf3 \
+		\cf4 var\cf3  env, envGen, buffers, signals;	\
+		buffers = \cf4 Control\cf3 .names([\cf5 \\buffers\cf3 ]).kr( 0!6 );\
+		env = \cf4 Control\cf3 .names([\cf5 \\env\cf3 ]).kr( \cf4 Env\cf3 (1!12, [1]++(0!10)) );\
+		envGen = \cf4 EnvGen\cf3 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
+		signals = \cf4 DiskIn\cf3 .ar( 2, buffers, 0 ) * envGen;\
+		signals = signals.stutter(2);\
+\cf2 //		signals[5] = signals[5]*0.5;\cf3 \
+\cf2 //		signals[8] = signals[8]*0.5;\cf3 \
+		signals.do(\{\
+			\cf4 |sig, i|\cf3 \
+			\cf4 Out\cf3 .ar( ~rightChannels[i], sig[0] );\
+			\cf4 Out\cf3 .ar( ~leftChannels[i], sig[1] );\
+		\});\
+	\}).send(s).store;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf3 	\
+	~ghostBuffer = \cf4 Buffer\cf3 .read( s, \cf6 "/Users/Shared/
+\f2 sincroniaTesla_ghost.wav
+\f1 "\cf3 );\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf3 \
+	\cf6 "RAPS INITIALIZED"\cf3 .postln;\
+\};\
+\
+~prepare = \{\
+	~buffers = [\
+			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/
+\f2\fs24 RAPS_CLuster_1_2.aiff
+\f0\fs22 "\cf3 , 0, 2),\
+			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/
+\f2\fs24 RAPS_CLuster_3_4.aiff
+\f0\fs22 "\cf3 , 0, 2),\
+			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/
+\f2\fs24 RAPS_CLuster_5_6.aiff
+\f0\fs22 "\cf3 , 0, 2),\
+			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/
+\f2\fs24 RAPS_CLuster_7_8.aiff
+\f0\fs22 "\cf3 , 0, 2),\
+			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/
+\f2\fs24 RAPS_CLuster_9_10.aiff
+\f0\fs22 "\cf3 , 0, 2),\
+			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/
+\f2\fs24 RAPS_CLuster_11_12.aiff
+\f0\fs22 "\cf3 , 0, 2),\
+		];\
+			\
+	~playClock = \cf4 TempoClock\cf3 .new;\
+	~playTask = \
+		\cf4 Task\cf3 (\{ \cf4 |starttime|\cf3 \
+			\cf4 var\cf3  totalDur;\
+			totalDur = 3*60;\
+	\
+			~synth = \cf4 Synth\cf3 ( \cf5 \\Stereo12ChanBellPlayer\cf3 ,args:[ \cf5 \\amp\cf3 , -6.dbamp, \cf5 \\dur\cf3 , 3*60, \cf5 \\buffers\cf3 , ~buffers.collect(\{ \cf4 |buf|\cf3  buf.bufnum \}) ], 	target:\cf4 GroupManager\cf3 .get.synths );\
+	\
+			
+\f1\fs24 ~ghost = \cf4 Ghost\cf3 .newFromBuffer( ~ghostBuffer, 30, s );\
+
+\f0\fs22 			1.wait;\
+			~ghost.play;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf3 			10.wait;\
+			~ghost.set( \cf5 \\amp\cf3 , 100, \cf5 \\width\cf3 , 0.9, \cf5 \\fadeTime\cf3 , 1, \cf5 \\rate\cf3 , 0.2, \cf5 \\rateDev\cf3 , 0.01, \cf5 \\density\cf3 , 0.2 );\
+			10.wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs22 \cf3 			~ghostPan1 = \cf4 ElementPanner\cf3 ( ~ghost.ghostBus );\
+			~ghostPan2 = \cf4 ElementPanner\cf3 ( ~ghost.ghostBus );\
+			\cf2 // 15 seconds before end\cf3 \
+			(totalDur-10-10-1-15).wait;\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf3 			~ghostPan1.play; \
+			~ghostPan2.play;\
+			4.wait;\
+			~ghostPan1.updateState( 10, \cf5 \\perim\cf3 , \{\
+				\cf4 SeedMaster\cf3 .ugen( ~ghost.hash );\
+				[ 1, \cf4 LFNoise2\cf3 .kr( \cf4 LFNoise2\cf3 .kr(0.2, 0.2, 0.2), 0.5, 0.5 ), 1 ];\
+			\});\
+			~ghostPan2.updateState( 10, \cf5 \\rect\cf3 , \{\
+				\cf4 SeedMaster\cf3 .ugen( ~ghost.hash+1 );\
+				[ 1, \
+					\cf4 SinOsc\cf3 .kr( 0.2, 0, 0.2, \cf4 LFNoise2\cf3 .kr( 0.2, 0.3, 0.5 ) ), \
+					\cf4 SinOsc\cf3 .kr( 0.2, 0, 0.2, \cf4 LFNoise2\cf3 .kr( 0.2, 0.3, 0.5 ) ), \
+				1 ];\
+			\});\
+			10.wait;\
+			~ghost.set( \cf5 \\amp\cf3 , 50, \cf5 \\width\cf3 , 0.9, \cf5 \\fadeTime\cf3 , 0.1, \cf5 \\rate\cf3 , 0.2, \cf5 \\rateDev\cf3 , 0.01, \cf5 \\density\cf3 , 1 );\
+			60.wait;\
+			~ghost.set( \cf5 \\amp\cf3 , 80, \cf5 \\width\cf3 , 0.5, \cf5 \\fadeTime\cf3 , 1, \cf5 \\rate\cf3 , 0.2, \cf5 \\rateDev\cf3 , 0.2, \cf5 \\density\cf3 , 3 );\
+			~ghostPan1.updateState( 60, \cf5 \\perim\cf3 , \{\
+				\cf4 SeedMaster\cf3 .ugen( ~ghost.hash );\
+				[ 1, \cf4 LFNoise2\cf3 .kr( \cf4 LFNoise2\cf3 .kr(0.2, 0.2, 0.2), 0.5, 0.5 ), 0 ];\
+			\});\
+			~ghostPan2.updateState( 60, \cf5 \\rect\cf3 , \{\
+				\cf4 SeedMaster\cf3 .ugen( ~ghost.hash );\
+				[ 1, \
+					\cf4 SinOsc\cf3 .kr( 0.2, 0, 0.2, \cf4 LFNoise2\cf3 .kr( 0.2, 0.3, 0.5 ) ), \
+					\cf4 SinOsc\cf3 .kr( 0.2, 0, 0.2, \cf4 LFNoise2\cf3 .kr( 0.2, 0.3, 0.5 ) ), \
+				0 ];\
+			\});\
+			~this.prepareNext();\
+			60.wait;\
+			~ghost.set( \cf5 \\amp\cf3 , 0, \cf5 \\width\cf3 , 0.01, \cf5 \\fadeTime\cf3 , 10, \cf5 \\rate\cf3 , 0.01, \cf5 \\rateDev\cf3 , 0.75, \cf5 \\density\cf3 , 1 );\
+			~\cf4 this\cf3 .playNext();\
+			10.wait;	\
+			~\cf4 this\cf3 .cleanup();
+\f0\fs22 			\
+		\}, ~playClock);\
+\
+	\cf6 "RAPS PREPARED"\cf3 .postln;\
+\};\
+\
+~play = \{\
+\
+	~playTask.play;\
+	\cf6 "SYNCHRONY PLAYING - RAPS"\cf3 .postln;\
+\
+\};\
+\
+~free = \{\
+\
+	~synth.free;\
+	~ghost.free;\
+	
+\f1\fs24 ~ghostPan1.free;\
+	~ghostPan2.free;
+\f0\fs22 \
+	~playClock.clear;\
+	~buffers.do(\{ \cf4 |buf|\cf3  buf.close \});\
+	~buffers.do(\{ \cf4 |buf|\cf3  buf.free \});\
+	~buffers = ~playTask = ~playClock = ~synth = 
+\f1\fs24 \cf0 ~ghostPan1 = ~ghostPan2 =
+\f0\fs22 \cf3  \cf4 nil\cf3 ;\
+	\cf6 "SYNCHRONY FREEING - RAPS"\cf3 .postln;\
+\
+\};\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf4 MiroEnvironment\cf3 .get(\cf5 \\raps\cf3 ).pop;\
+\
+\
+\cf2 //MiroEnvironment.gui}

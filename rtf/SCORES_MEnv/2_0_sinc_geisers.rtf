@@ -1,30 +1,29 @@
 {\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
 {\fonttbl\f0\fnil\fcharset0 Monaco;}
-{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
-\red96\green96\blue96;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red0\green115\blue0;\red96\green96\blue96;\red96\green96\blue96;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs22 \cf2 //// NEED TO RUN MIROINITIALIZE BEFORE THIS ////\cf0 \
+\f0\fs22 \cf2 //// NEED TO RUN MIROINITIALIZE BEFORE THIS ////\cf3 \
 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-\cf3 MiroEnvironment\cf0 .get(\cf4 \\sinc2_geisers\cf0 ).push;\
+\cf4 MiroEnvironment\cf3 .get(\cf5 \\sinc2_geisers\cf3 ).push;\
 \
 ~init = \{\
 \
 	~sfs = [\
-		\cf5 "/Users/Shared/geiser_cluster_01_logatoms.aiff"\cf0 , \
-		\cf5 "/Users/Shared/geiser_cluster_02.aiff"\cf0 , \
-		\cf5 "/Users/Shared/geiser_cluster_03_politicos.aiff"\cf0 , \
-		\cf5 "/Users/Shared/geiser_cluster_04_escritores_corto.aiff"\cf0 ,\
-		\cf5 "/Users/Shared/geiser_cluster_05.aiff"\cf0 , \
-		\cf5 "/Users/Shared/geiser_cluster_06_megafonos.aiff"\cf0 ,\
-		\cf5 "/Users/Shared/geiser_cluster_07_comerciales.aiff"\cf0 , \
-		\cf5 "/Users/Shared/geiser_cluster_08.aif"\cf0 , \
-		\cf5 "/Users/Shared/geiser_cluster_09_religion.aiff"\cf0 ,\
-		\cf5 "/Users/Shared/geiser_cluster_10_abecedario.aiff"\cf0 ,\
-		\cf5 "/Users/Shared/geiser_cluster_011_tito.aiff"\cf0 ,\
-		\cf5 "/Users/Shared/geiser_cluster_12_ninos.aiff"\cf0 \
-	];\
+		\cf6 "/Users/Shared/geiser_cluster_01_logatoms.aiff"\cf3 , \
+		\cf6 "/Users/Shared/geiser_cluster_02.aiff"\cf3 , \
+		\cf6 "/Users/Shared/geiser_cluster_03_politicos.aiff"\cf3 , \
+		\cf6 "/Users/Shared/geiser_cluster_04_escritores_corto.aiff"\cf3 ,\
+		\cf6 "/Users/Shared/geiser_cluster_05.aiff"\cf3 , \
+		\cf6 "/Users/Shared/geiser_cluster_06_megafonos.aiff"\cf3 ,\
+		\cf6 "/Users/Shared/geiser_cluster_07_comerciales.aiff"\cf3 , \
+		\cf6 "/Users/Shared/geiser_cluster_08.aif"\cf3 , \
+		\cf6 "/Users/Shared/geiser_cluster_09_religion.aiff"\cf3 ,\
+		\cf6 "/Users/Shared/geiser_cluster_10_abecedario.aiff"\cf3 ,\
+\cf0 		\cf7 "/Users/Shared/geiser_cluster_011_tito.aiff"\cf0 ,\
+		\cf7 "/Users/Shared/geiser_cluster_12_ninos.aiff"\cf0 \
+\cf3 	];\
 	\
 	~gDurs = [\
 		[23,8,20,16,16],\
@@ -41,76 +40,76 @@
 		[33,23,13,27]\
 	];\
 \
-	\cf5 "GEYSER INITIALIZED - SYNCHRONY 2"\cf0 .postln;\
+	\cf6 "GEYSER INITIALIZED - SYNCHRONY 2"\cf3 .postln;\
 \
 \};\
 \
 ~prepare = \{\
 \
-	~sfBufs = 12.collect(\{ \cf3 |i|\cf0  \cf3 CtkBuffer\cf0 .playbuf( ~sfs[i] ).load(sync: \cf3 true\cf0 ).bufnum \});\
-	~kernel = \cf3 CtkBuffer\cf0 .playbuf(\cf5 "/Users/Shared/geysirkernel.aiff"\cf0 , server:s).load(sync: \cf3 true\cf0 );\
+	~sfBufs = 12.collect(\{ \cf4 |i|\cf3  \cf4 CtkBuffer\cf3 .playbuf( ~sfs[i] ).load(sync: \cf4 true\cf3 ).bufnum \});\
+	~kernel = \cf4 CtkBuffer\cf3 .playbuf(\cf6 "/Users/Shared/geysirkernel.aiff"\cf3 , server:s).load(sync: \cf4 true\cf3 );\
 \
-	~geysers = \cf3 Array\cf0 .fill(~gDurs.size, \cf3 nil\cf0 );\
+	~geysers = \cf4 Array\cf3 .fill(~gDurs.size, \cf4 nil\cf3 );\
 \
-	~gDurs.do(\{ \cf3 |durList, i|\cf0 \
-		~geysers[i] = durList.collect(\{ \cf3 |dur|\cf0 \
-			\{ \cf3 Geyser\cf0 .new( s, i, ~sfBufs[i], ~kernel, dur, 0.25 ) \}; \cf2 // 0.25 = amp\cf0 \
+	~gDurs.do(\{ \cf4 |durList, i|\cf3 \
+		~geysers[i] = durList.collect(\{ \cf4 |dur|\cf3 \
+			\{ \cf4 Geyser\cf3 .new( s, i, ~sfBufs[i], ~kernel, dur, 0.25 ) \}; \cf2 // 0.25 = amp\cf3 \
 		\});\
 	\});\
 \
 	~gscore = [\
-		\cf2 //	-----	1	-----	\\\\\cf0 \
+		\cf2 //	-----	1	-----	\\\\\cf3 \
 		[ 0,	~geysers[0][0] ],\
 		[ 5,	~geysers[4][0] ],\
 		[ 11,	~geysers[9][0] ],\
 		[ 14,	~geysers[11][0] ],\
-		\cf2 //	-----	2	-----	\\\\\cf0 \
+		\cf2 //	-----	2	-----	\\\\\cf3 \
 		[ 20,	~geysers[2][0] ],\
 		[ 24,	~geysers[6][0] ],\
 		[ 27,	~geysers[0][1] ],\
 		[ 32,	~geysers[8][0] ],\
-		\cf2 //	-----	3	-----	\\\\\cf0 \
+		\cf2 //	-----	3	-----	\\\\\cf3 \
 		[ 35,	~geysers[9][1] ],\
 		[ 40,	~geysers[7][0] ],\
 		[ 44,	~geysers[1][0] ],\
-		\cf2 //	-----	4	-----	\\\\\cf0 \
+		\cf2 //	-----	4	-----	\\\\\cf3 \
 		[ 45,	~geysers[10][0] ],\
 		[ 50,	~geysers[3][0] ],\
 		[ 60,	~geysers[5][0] ],\
-		\cf2 //	-----	5	-----	\\\\\cf0 \
+		\cf2 //	-----	5	-----	\\\\\cf3 \
 		[ 65,	~geysers[0][2] ],\
 		[ 66,	~geysers[4][1] ],\
 		[ 70,	~geysers[10][1] ],\
-		\cf2 //	-----	6	-----	\\\\\cf0 \
+		\cf2 //	-----	6	-----	\\\\\cf3 \
 		[ 74,	~geysers[2][1] ],\
 		[ 79,	~geysers[0][3] ],\
 		[ 82,	~geysers[7][1] ],\
 		[ 88,	~geysers[9][2] ],\
-		\cf2 //	-----	7	-----	\\\\\cf0 \
+		\cf2 //	-----	7	-----	\\\\\cf3 \
 		[ 90,	~geysers[1][1] ],\
 		[ 95,	~geysers[6][1] ],\
 		[ 100,	~geysers[5][1] ],\
-		\cf2 //	-----	8	-----	\\\\\cf0 \
+		\cf2 //	-----	8	-----	\\\\\cf3 \
 		[ 102,	~geysers[9][3] ],\
 		[ 108,	~geysers[11][1] ],\
 		[ 110,	~geysers[5][2] ],\
 		[ 112,	~geysers[3][1] ],\
-		\cf2 //	-----	9	-----	\\\\\cf0 \
+		\cf2 //	-----	9	-----	\\\\\cf3 \
 		[ 120,	~geysers[8][1] ],\
 		[ 122,	~geysers[10][1] ],\
 		[ 125,	~geysers[2][2] ],\
 		[ 130,	~geysers[3][2] ],\
-		\cf2 //	-----	10	-----	\\\\\cf0 \
+		\cf2 //	-----	10	-----	\\\\\cf3 \
 		[ 134,	~geysers[11][2] ],\
 		[ 138,	~geysers[1][2] ],\
 		[ 139,	~geysers[9][4] ],\
 		[ 142,	~geysers[4][2] ],\
-		\cf2 //	-----	11	-----	\\\\\cf0 \
+		\cf2 //	-----	11	-----	\\\\\cf3 \
 		[ 144,	~geysers[8][2] ],\
 		[ 148,	~geysers[1][3] ],\
 		[ 155,	~geysers[6][2] ],\
 		[ 160,	~geysers[11][3] ],\
-		\cf2 //	-----	12	-----	\\\\\cf0 \
+		\cf2 //	-----	12	-----	\\\\\cf3 \
 		[ 164,	~geysers[0][4] ],\
 		[ 166,	~geysers[2][2] ],\
 		[ 172,	~geysers[7][2] ],\
@@ -119,39 +118,39 @@
 \
 	~pastGroups = [];\
 	~pastBusses = [];\
-	~finishedFlag = \cf3 false\cf0 ;\
+	~finishedFlag = \cf4 false\cf3 ;\
 	\
-	~geyserClock = \cf3 TempoClock\cf0 .new;\
+	~geyserClock = \cf4 TempoClock\cf3 .new;\
 	~gscoreTask = \
-		\cf3 Task\cf0 (\{ \cf3 |starttime|\cf0 \
-			\cf3 var\cf0  update, srcdex, now, offset, finished;\
-			update = 0.5; \cf2 // update time for the task to check the score\cf0 \
+		\cf4 Task\cf3 (\{ \cf4 |starttime|\cf3 \
+			\cf4 var\cf3  update, srcdex, now, offset, finished;\
+			update = 0.5; \cf2 // update time for the task to check the score\cf3 \
 			srcdex = 0;\
 			now = 0.0;\
-			offset = 0;\
-			finished = \cf3 false\cf0 ;\
+			offset = 0.0;\
+			finished = \cf4 false\cf3 ;\
 \
-			~gscore.size.do(\{ \cf3 | i |\cf0 \
+			~gscore.size.do(\{ \cf4 | i |\cf3 \
 				(offset > ~gscore[i][0]).if(\{\
 					srcdex = srcdex + 1;\
 					\});\
 				\});\
 				\
-			~nextPrepared = \cf3 false\cf0 ;\
-			~nextPlayed = \cf3 false\cf0 ;\
-			\cf2 //"score is starting at breakpoint ".post; srcdex.postln;\cf0 \
-			block(\{ \cf3 | break |\cf0 \
-				\cf3 inf\cf0 .do(\{ \
-					\cf3 var\cf0  thisGeyser;\
-					now = \cf3 thisThread\cf0 .beats - starttime + offset;\
-					now.postln;\
+			~nextPrepared = \cf4 false\cf3 ;\
+			~nextPlayed = \cf4 false\cf3 ;\
+			\cf2 //"score is starting at breakpoint ".post; srcdex.postln;\cf3 \
+			block(\{ \cf4 | break |\cf3 \
+				\cf4 inf\cf3 .do(\{ \
+					\cf4 var\cf3  thisGeyser;\
+					now = \cf4 thisThread\cf3 .beats - starttime + offset;\
+					\
 					if( ~nextPrepared.not && (now > 130), \{\
-						~nextPrepared = \cf3 true\cf0 ;\
-						~\cf3 this\cf0 .prepareNext();\
+						~nextPrepared = \cf4 true\cf3 ;\
+						~\cf4 this\cf3 .prepareNext();\
 					\});\
 \
 					if( ~nextPlayed.not && (now > 160), \{\
-						~nextPlayed = \cf3 true\cf0 ;								~\cf3 this\cf0 .playNext();\
+						~nextPlayed = \cf4 true\cf3 ;								~\cf4 this\cf3 .playNext();\
 					\});\
 					\
 					finished.not.if(\{\
@@ -161,14 +160,14 @@
 								~pastGroups = ~pastGroups.add(thisGeyser.group);\
 								~pastBusses = ~pastBusses.addAll( [thisGeyser.topanner, thisGeyser.toconv, thisGeyser.tobark] );\
 								0.5.wait;\
-								s.makeBundle(\cf3 nil\cf0 , thisGeyser.play);\
+								s.makeBundle(\cf4 nil\cf3 , thisGeyser.play);\
 								srcdex = srcdex + 1;\
-								\cf2 //"score advancing to ".post; srcdex.postln;\cf0 \
+								\cf2 //"score advancing to ".post; srcdex.postln;\cf3 \
 									(srcdex == ~gscore.size).if(\{\
-										finished = \cf3 true\cf0 ;\
-										~finishedFlag = \cf3 true\cf0 ;\
-										\cf5 "this geyser score is FINISHED: "\cf0 .post;\
-										 ~\cf3 this\cf0 .cleanup();\
+										finished = \cf4 true\cf3 ;\
+										~finishedFlag = \cf4 true\cf3 ;\
+										\cf6 "this geyser score is FINISHED: "\cf3 .post;\
+										 ~\cf4 this\cf3 .cleanup();\
 										break.value();\
 									\});\
 						\});\
@@ -178,7 +177,7 @@
 			\});	\
 		\}, ~geyserClock);\
 \
-	\cf5 "GEYSER PREPARED - SYNCHRONY 2"\cf0 .postln;\
+	\cf6 "GEYSER PREPARED - SYNCHRONY 2"\cf3 .postln;\
 \
 \};\
 \
@@ -186,7 +185,7 @@
 \
 	~gscoreTask.play;\
 \
-	\cf5 "GEYSER PLAYING - SYNCHRONY 2"\cf0 .postln;\
+	\cf6 "GEYSER PLAYING - SYNCHRONY 2"\cf3 .postln;\
 \
 \};\
 \
@@ -194,20 +193,19 @@
 \
 	~gscoreTask.stop.reset;\
 	~geyserClock.clear;\
-	~sfBufs.do(\cf3 _\cf0 .free);\
+	~sfBufs.do(\cf4 _\cf3 .free);\
 	~kernel.free;\
-		\cf2 // for early killing\cf0 \
+		\cf2 // for early killing\cf3 \
 	~finishedFlag.not.if(\{ \
-		\cf5 "killed Early"\cf0 .postln;\
-		~pastGroups.do(\{ \cf3 |group|\cf0  group.isPlaying.if(\{ group.deepFree\}) \});\
-		~pastBusses.do(\{ \cf3 |bus|\cf0  bus.isPlaying.if(\{bus.free\}) \});\
+		\cf6 "killed Early"\cf3 .postln;\
+		~pastGroups.do(\{ \cf4 |group|\cf3  group.isPlaying.if(\{ group.deepFree\}) \});\
+		~pastBusses.do(\{ \cf4 |bus|\cf3  bus.isPlaying.if(\{bus.free\}) \});\
 	\});\
-	~gscoreTask = ~geyserClock = ~kernel = ~sfBufs = ~gscore = ~finishedFlag = ~pastGroups = ~pastBusses = \cf3 nil\cf0 ;\
+	~gscoreTask = ~geyserClock = ~kernel = ~sfBufs = ~gscore = ~finishedFlag = ~pastGroups = ~pastBusses = \cf4 nil\cf3 ;\
 \
-	\cf5 "GEYSER FREEING - SYNCHRONY 2"\cf0 .postln;\
+	\cf6 "GEYSER FREEING - SYNCHRONY 2"\cf3 .postln;\
 	\
 \};\
 \
-\cf3 MiroEnvironment\cf0 .get(\cf4 \\sinc2_geisers\cf0 ).pop;\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf4 MiroEnvironment\cf3 .get(\cf5 \\sinc2_geisers\cf3 ).pop;\
 \cf2 //MiroEnvironment.gui;}

@@ -1,14 +1,14 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1038
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
 {\fonttbl\f0\fnil\fcharset0 Monaco;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green115\blue0;\red191\green0\blue0;
-\red96\green96\blue96;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green0\blue0;\red0\green115\blue0;
+\red191\green0\blue0;\red96\green96\blue96;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs22 \cf2 MiroEnvironment\cf0 .get(\cf3 \\flujo4_voces\cf0 ).push;\
+\f0\fs22 \cf2 MiroEnvironment\cf3 .get(\cf4 \\flujo4_voces\cf3 ).push;\
 \
 ~init = \{\
 \
-	~vg = \cf2 VirtualSpeakerArray\cf0 .get.groupings;\
+	~vg = \cf2 VirtualSpeakerArray\cf3 .get.groupings;\
 	\
 	~cabChannelsRight = [\
 		~vg[0][0],\
@@ -22,9 +22,9 @@
 	];\
 	\
 	~cabChannelsLeft = [\
-		~vg[1][3], 		\cf4 // cabinet 1's speakers\cf0 \
-		~vg[9][1],		\cf4 // cabinet 2's speakers\cf0 \
-		[~vg[2][2] , ~vg[3][0]],	\cf4 // etc...\cf0 \
+		~vg[1][3], 		\cf5 // cabinet 1's speakers\cf3 \
+		~vg[9][1],		\cf5 // cabinet 2's speakers\cf3 \
+		[~vg[2][2] , ~vg[3][0]],	\cf5 // etc...\cf3 \
 		[~vg[7][2] , ~vg[10][0]],\
 		[~vg[5][0] , ~vg[7][0]],\
 		~vg[1][2],\
@@ -46,104 +46,96 @@
 		~vg[11].atAll([1])\
 	];\
 	\
-	~cabChannelsRight = ~cabChannelsRight.collect(\{ \cf2 |vspkrs, i|\cf0  \
-		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf0  vspkr.busNum \})\
+	~cabChannelsRight = ~cabChannelsRight.collect(\{ \cf2 |vspkrs, i|\cf3  \
+		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf3  vspkr.busNum \})\
 	\});\
 	\
-	~cabChannelsLeft = ~cabChannelsLeft.collect(\{ \cf2 |vspkrs, i|\cf0  \
-		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf0  vspkr.busNum \})\
+	~cabChannelsLeft = ~cabChannelsLeft.collect(\{ \cf2 |vspkrs, i|\cf3  \
+		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf3  vspkr.busNum \})\
 	\});\
 	\
-	~observeChannelsRight = ~observeChannelsRight.collect(\{ \cf2 |vspkrs, i|\cf0  \
-		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf0  vspkr.busNum \})\
+	~observeChannelsRight = ~observeChannelsRight.collect(\{ \cf2 |vspkrs, i|\cf3  \
+		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf3  vspkr.busNum \})\
 	\});\
 	\
-	~observeChannelsLeft = ~observeChannelsLeft.collect(\{ \cf2 |vspkrs, i|\cf0  \
-		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf0  vspkr.busNum \})\
+	~observeChannelsLeft = ~observeChannelsLeft.collect(\{ \cf2 |vspkrs, i|\cf3  \
+		vspkrs.asArray.collect(\{ \cf2 | vspkr |\cf3  vspkr.busNum \})\
 	\});\
 \
-	\cf2 SynthDef\cf0 ( \cf3 \\Stereo8ChanPlayer\cf0 , \{\
-		\cf2 | amp, dur=20 |\cf0 \
-		\cf2 var\cf0  env, envGen, buffers, signals;	\
-		buffers = \cf2 Control\cf0 .names([\cf3 \\buffers\cf0 ]).kr( 0!8 );\
-		env = \cf2 Control\cf0 .names([\cf3 \\env\cf0 ]).kr( \cf2 Env\cf0 (1!12, [1]++(0!10)) );\
-		envGen = \cf2 EnvGen\cf0 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
-		signals = V\cf2 DiskIn\cf0 .ar( 2, buffers, BufRateScale.kr(buffers), 0 ) * envGen;\
+	\cf2 SynthDef\cf3 ( \cf4 \\Stereo8ChanPlayer\cf3 , \{\
+		\cf2 | amp, dur=20 |\cf3 \
+		\cf2 var\cf3  env, envGen, buffers, signals;	\
+		buffers = \cf2 Control\cf3 .names([\cf4 \\buffers\cf3 ]).kr( 0!8 );\
+		env = \cf2 Control\cf3 .names([\cf4 \\env\cf3 ]).kr( \cf2 Env\cf3 (1!12, [1]++(0!10)) );\
+		envGen = \cf2 EnvGen\cf3 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
+		signals = \cf2 DiskIn\cf3 .ar( 2, buffers ) * envGen;\
 		signals.do(\{\
-			\cf2 |sig, i|\cf0 \
-			\cf2 Out\cf0 .ar( ~cabChannelsRight[i], sig[0]);\
-			\cf2 Out\cf0 .ar( ~cabChannelsLeft[i], sig[1]);\
+			\cf2 |sig, i|\cf3 \
+			\cf2 Out\cf3 .ar( ~cabChannelsRight[i], sig[0]);\
+			\cf2 Out\cf3 .ar( ~cabChannelsLeft[i], sig[1]);\
 		\});\
 	\}).send(s).store;\
 	\
-	\cf2 SynthDef\cf0 ( \cf3 \\Stereo4ChanPlayer\cf0 , \{\
-		\cf2 | amp, dur=20 |\cf0 \
-		\cf2 var\cf0  env, envGen, buffers, signals;	\
-		buffers = \cf2 Control\cf0 .names([\cf3 \\buffers\cf0 ]).kr( 0!4 );\
-		env = \cf2 Control\cf0 .names([\cf3 \\env\cf0 ]).kr( \cf2 Env\cf0 (1!12, [1]++(0!10)) );\
-		envGen = \cf2 EnvGen\cf0 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
-		signals = V\cf2 DiskIn\cf0 .ar( 2, buffers, BufRateScale.kr(buffers), 0 ) * envGen;\
+	\cf2 SynthDef\cf3 ( \cf4 \\Stereo4ChanPlayer\cf3 , \{\
+		\cf2 | amp, dur=20 |\cf3 \
+		\cf2 var\cf3  env, envGen, buffers, signals;	\
+		buffers = \cf2 Control\cf3 .names([\cf4 \\buffers\cf3 ]).kr( 0!4 );\
+		env = \cf2 Control\cf3 .names([\cf4 \\env\cf3 ]).kr( \cf2 Env\cf3 (1!12, [1]++(0!10)) );\
+		envGen = \cf2 EnvGen\cf3 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
+		signals = \cf2 DiskIn\cf3 .ar( 2, buffers ) * envGen;\
 		signals.do(\{\
-			\cf2 |sig, i|\cf0 \
-			\cf2 Out\cf0 .ar( ~observeChannelsRight[i], sig[0] );\
-			\cf2 Out\cf0 .ar( ~observeChannelsLeft[i], sig[1] );\
+			\cf2 |sig, i|\cf3 \
+			\cf2 Out\cf3 .ar( ~observeChannelsRight[i], sig[0] );\
+			\cf2 Out\cf3 .ar( ~observeChannelsLeft[i], sig[1] );\
 		\});\
 	\}).send(s).store;\
 \
-	\cf5 "FLUX INITIALIZED - VOICES"\cf0 .postln;\
+	\cf6 "FLUX INITIALIZED - VOICES"\cf3 .postln;\
 \
 \};\
 \
 ~prepare = \{\
 \
 	~cabBuffers = [\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_01.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_02.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_03.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_04.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_05.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_06.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_07.aiff"\cf0 , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/voces_090623_CABINET_08.aiff"\cf0 , 0, 2)\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_01.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_02.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_03.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_04.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_05.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_06.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_07.aiff"\cf3 , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/voces_090623_CABINET_08.aiff"\cf3 , 0, 2)\
 	\
 	];\
 	\
 	~obsvBuffers = [\
 	\
-		\cf2 Buffer\cf0 .cueSoundFile(s,\cf5 "/Users/Shared/voces_090623_OBSERVATORY_01.aiff"\cf0  , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s,\cf5 "/Users/Shared/voces_090623_OBSERVATORY_02.aiff"\cf0  , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s,\cf5 "/Users/Shared/voces_090623_OBSERVATORIO_03.aiff"\cf0  , 0, 2),\
-		\cf2 Buffer\cf0 .cueSoundFile(s,\cf5 "/Users/Shared/voces_090623_OBSERVATORY_04.aiff"\cf0  , 0, 2)\
+		\cf2 Buffer\cf3 .cueSoundFile(s,\cf6 "/Users/Shared/voces_090623_OBSERVATORY_01.aiff"\cf3  , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s,\cf6 "/Users/Shared/voces_090623_OBSERVATORY_02.aiff"\cf3  , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s,\cf6 "/Users/Shared/voces_090623_OBSERVATORIO_03.aiff"\cf3  , 0, 2),\
+		\cf2 Buffer\cf3 .cueSoundFile(s,\cf6 "/Users/Shared/voces_090623_OBSERVATORY_04.aiff"\cf3  , 0, 2)\
 	\
 	];\
 \
-	~playClock = \cf2 TempoClock\cf0 .new;\
+	~playClock = \cf2 TempoClock\cf3 .new;\
 	~playTask = \
-		\cf2 Task\cf0 (\{ \cf2 |starttime|\cf0 \
-			\cf2 var\cf0  totalDur;\
+		\cf2 Task\cf3 (\{ \cf2 |starttime|\cf3 \
+			\cf2 var\cf3  totalDur;\
 			totalDur = 11.6*60;\
 			\
-			~synth1 = \cf2 Synth\cf0 ( \cf3 \\Stereo8ChanPlayer\cf0 ,args:[ \cf3 \\amp\cf0 , 1, \cf3 \\dur\cf0 , 11.6*60, \cf3 \\buffers\cf0 , ~cabBuffers.collect(\{ \cf2 |buf|\cf0  buf.bufnum \}) ], 	target:\cf2 GroupManager\cf0 .get.synths );\
+\cf5 //			~synth1 = Synth( \\Stereo8ChanPlayer,args:[ \\amp, 1, \\dur, 11.6*60, \\buffers, ~cabBuffers.collect(\{ |buf| buf.bufnum \}) ], 	target:GroupManager.get.synths );\cf3 \
 \
-			~synth2 = \cf2 Synth\cf0 ( \cf3 \\Stereo4ChanPlayer\cf0 ,args:[ \cf3 \\amp\cf0 , 1, \cf3 \\dur\cf0 , 11.6*60, \cf3 \\buffers\cf0 , ~obsvBuffers.collect(\{ \cf2 |buf|\cf0  buf.bufnum \}) ], 	target:\cf2 GroupManager\cf0 .get.synths );\
+			~synth2 = \cf2 Synth\cf3 ( \cf4 \\Stereo4ChanPlayer\cf3 ,args:[ \cf4 \\amp\cf3 , 1, \cf4 \\dur\cf3 , 11.6*60, \cf4 \\buffers\cf3 , ~obsvBuffers.collect(\{ \cf2 |buf|\cf3  buf.bufnum \}) ], 	target:\cf2 GroupManager\cf3 .get.synths );\
 \
 			2.wait;\
-			~prepped=\cf2 false\cf0 ; ~played=\cf2 false\cf0 ;\
-			block(\{ \cf2 |break|\cf0 \
-				\cf2 inf\cf0 .do(\{\
-					\cf2 var\cf0  now;\
-					now = \cf2 thisThread\cf0 .beats - starttime;\
-\
-					(now > (totalDur-60) && ~prepped.not ).if(\{\
-						~\cf2 this\cf0 .prepareNext(); ~prepped=\cf2 true\cf0 ;\
-					\});\
-					(now > (totalDur-30) && ~played.not ).if(\{\
-						~\cf2 this\cf0 .prepareNext(); ~played=\cf2 true\cf0 ;\
-					\});\
+			block(\{ \cf2 |break|\cf3 \
+				\cf2 inf\cf3 .do(\{\
+					\cf2 var\cf3  now;\
+					now = \cf2 thisThread\cf3 .beats - starttime;\
 					\
 					(now > totalDur).if(\{\
-						\cf5 "FLUX ENDING - VOICES"\cf0 .postln;\
-						~\cf2 this\cf0 .cleanup();\
+						\cf6 "FLUX ENDING - VOICES"\cf3 .postln;\
+						\cf5 //~this.cleanUp\cf3 \
 						break.value();\
 						\});\
 					5.wait;\
@@ -151,28 +143,28 @@
 			\});\
 		\}, ~playClock);\
 \
-	\cf5 "SYNCHRONY PREPARED - VOICES"\cf0 .postln;\
+	\cf6 "SYNCHRONY PREPARED - VOICES"\cf3 .postln;\
 \
 \};\
 \
 ~play = \{\
 \
 	~playTask.play;\
-	\cf5 "FLUX PLAYING - VOICES"\cf0 .postln;\
+	\cf6 "FLUX PLAYING - VOICES"\cf3 .postln;\
 \
 \};\
 \
 ~free = \{\
 \
-	[~synth1, ~synth2].do(\cf2 _\cf0 .free);\
+	[~synth1, ~synth2].do(\cf2 _\cf3 .free);\
 	~playClock.clear;\
 	~playTask.stop.reset;\
-	(~cabBuffers ++ ~obsvBuffers).do(\{ \cf2 |buf|\cf0  buf.close \});\
-	(~cabBuffers ++ ~obsvBuffers).do(\{ \cf2 |buf|\cf0  buf.free \});\
-	~cabBuffers = ~obsvBuffers = ~playTask = ~playClock = ~synth1 = ~synth2 = \cf2 nil\cf0 ;\
-	\cf5 "FLUX FREEING - VOICES"\cf0 .postln;\
+	(~cabBuffers ++ ~obsvBuffers).do(\{ \cf2 |buf|\cf3  buf.close \});\
+	(~cabBuffers ++ ~obsvBuffers).do(\{ \cf2 |buf|\cf3  buf.free \});\
+	~cabBuffers = ~obsvBuffers = ~playTask = ~playClock = ~synth1 = ~synth2 = \cf2 nil\cf3 ;\
+	\cf6 "FLUX FREEING - VOICES"\cf3 .postln;\
 \
 \};\
 \
-\cf2 MiroEnvironment\cf0 .get(\cf3 \\flujo4_voces\cf0 ).pop;\
-\cf4 //MiroEnvironment.gui}
+\cf2 MiroEnvironment\cf3 .get(\cf4 \\flujo4_voces\cf3 ).pop;\
+\cf5 //MiroEnvironment.gui}

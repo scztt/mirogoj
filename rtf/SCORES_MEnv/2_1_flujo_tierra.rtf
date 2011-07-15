@@ -1,223 +1,219 @@
 {\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
 {\fonttbl\f0\fnil\fcharset0 Monaco;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green115\blue0;\red191\green0\blue0;
-\red96\green96\blue96;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue191;\red0\green0\blue0;\red0\green115\blue0;
+\red191\green0\blue0;\red96\green96\blue96;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs22 \cf2 MiroEnvironment\cf0 .get(\cf3 \\flujo2_tierra\cf0 ).push;\
+\f0\fs22 \cf2 MiroEnvironment\cf3 .get(\cf4 \\flujo2_tierra\cf3 ).push;\
 \
 ~init = \{\
 \
-	~earthDef = \cf2 SynthDef\cf0 ( \cf3 \\earth\cf0 , \{\
+	~earthDef = \cf2 SynthDef\cf3 ( \cf4 \\earth\cf3 , \{\
 		\cf2 | out=0, outAmp=1, speed=1, high=0.1, low=0.1, lowShelfAmt=(-3), warpFreq=0.25, fadeTime=0, shapeAmp=2, t_pulse,\
-			earthbuf, multibuf, shapebuf |\cf0 \
-		\cf2 var\cf0  d, d1, dAmp, dl, dh, dc, dFreq, noise, mod, \
+			earthbuf, multibuf, shapebuf |\cf3 \
+		\cf2 var\cf3  d, d1, dAmp, dl, dh, dc, dFreq, noise, mod, \
 			hpFreq, lpFreq,\
 			sig, amp, position, vel;\
-		\cf2 SeedMaster\cf0 .ugen;\
-		outAmp = \cf2 ControlFade\cf0 .kr( outAmp, fadeTime );	\
-		speed = \cf2 ControlFade\cf0 .kr( speed, fadeTime );	\
-		high = \cf2 ControlFade\cf0 .kr( high, fadeTime );\
-		low = \cf2 ControlFade\cf0 .kr( low, fadeTime );\
-		shapeAmp = \cf2 ControlFade\cf0 .kr( shapeAmp, fadeTime );\
+		\cf2 SeedMaster\cf3 .ugen;\
+		outAmp = \cf2 ControlFade\cf3 .kr( outAmp, fadeTime );	\
+		speed = \cf2 ControlFade\cf3 .kr( speed, fadeTime );	\
+		high = \cf2 ControlFade\cf3 .kr( high, fadeTime );\
+		low = \cf2 ControlFade\cf3 .kr( low, fadeTime );\
+		shapeAmp = \cf2 ControlFade\cf3 .kr( shapeAmp, fadeTime );\
 			\
 		high = high.pow(4);\
 		low = low.pow(4);\
 	\
-		speed = speed + \cf2 LagUD\cf0 .kr( \cf2 Trig\cf0 .kr(t_pulse, 0.1), 0.05, 1);\
-		position = \cf2 LFDNoise3\cf0 .kr( \cf2 LFDNoise3\cf0 .kr(0.7, speed*0.3, speed ), 0.5, 0.5);\
-		vel = (position - \cf2 DelayN\cf0 .kr( position, 0.03, 0.03)).abs;\
-		position = \cf2 Mirror\cf0 .kr((position + \cf2 LFDNoise3\cf0 .kr(1, 0.07)), 0,1);\
+		speed = speed + \cf2 LagUD\cf3 .kr( \cf2 Trig\cf3 .kr(t_pulse, 0.1), 0.05, 1);\
+		position = \cf2 LFDNoise3\cf3 .kr( \cf2 LFDNoise3\cf3 .kr(0.7, speed*0.3, speed ), 0.5, 0.5);\
+		vel = (position - \cf2 DelayN\cf3 .kr( position, 0.03, 0.03)).abs;\
+		position = \cf2 Mirror\cf3 .kr((position + \cf2 LFDNoise3\cf3 .kr(1, 0.07)), 0,1);\
 		position = position.mod(1);\
-		amp = vel / ( \cf2 LagUD\cf0 .kr(vel, 0.001, 20 ).max(0.001) );\
-		amp = \cf2 LagUD\cf0 .kr( amp, 0.01, 15);\
+		amp = vel / ( \cf2 LagUD\cf3 .kr(vel, 0.001, 20 ).max(0.001) );\
+		amp = \cf2 LagUD\cf3 .kr( amp, 0.01, 15);\
 		\
-		\cf4 // Warp through a buffer\cf0 \
-		d1 = \cf2 Warp1\cf0 .ar( 2, earthbuf, position, \
+		\cf5 // Warp through a buffer\cf3 \
+		d1 = \cf2 Warp1\cf3 .ar( 2, earthbuf, position, \
 			freqScale:warpFreq, windowSize:0.4, \
 			overlaps:4, windowRandRatio:0.7, interp:4) * (0.04+(amp*0.9));\
 	\
 		d = d1;\
-		\cf4 // optional\cf0 \
-		d = d + (d * \cf2 FreqShift\cf0 .ar(d, -240, \cf2 LFNoise2\cf0 .kr(1)));\
+		\cf5 // optional\cf3 \
+		d = d + (d * \cf2 FreqShift\cf3 .ar(d, -240, \cf2 LFNoise2\cf3 .kr(1)));\
 	\
-		\cf4 // Amplitude, determines low and high filter frequencies\cf0 \
-		dAmp = \cf2 Amplitude\cf0 .ar( d, 0.05, 0.5 );\
-		dAmp = dAmp / ( \cf2 LagUD\cf0 .ar( dAmp, 0.01, 15 ).max(0.001) );\
+		\cf5 // Amplitude, determines low and high filter frequencies\cf3 \
+		dAmp = \cf2 Amplitude\cf3 .ar( d, 0.05, 0.5 );\
+		dAmp = dAmp / ( \cf2 LagUD\cf3 .ar( dAmp, 0.01, 15 ).max(0.001) );\
 		\
 		lpFreq = (10 + (9000*low));\
 		hpFreq = (15000*high);\
 		\
-		dl = \cf2 Shaper\cf0 .ar( shapebuf, d*shapeAmp );\
-		dl = \cf2 LPF\cf0 .ar( dl, (150+(low*1400)) + (dAmp * lpFreq), 0.6 );\
-		dl = \cf2 LeakDC\cf0 .ar( dl );\
+		dl = \cf2 Shaper\cf3 .ar( shapebuf, d*shapeAmp );\
+		dl = \cf2 LPF\cf3 .ar( dl, (150+(low*1400)) + (dAmp * lpFreq), 0.6 );\
+		dl = \cf2 LeakDC\cf3 .ar( dl );\
 		\
 		dh = (dl*0.3) + d;\
-		dh = \cf2 HPF\cf0 .ar( dh, 19000 - (dAmp * hpFreq), 2);\
+		dh = \cf2 HPF\cf3 .ar( dh, 19000 - (dAmp * hpFreq), 2);\
 		dh = dh + [\
-			\cf2 MultiTap\cf0 .ar(\{4.0.rand\}!4, \{1.0.rand\}!4, dh[0], 0.7, bufnum: multibuf),\
-			\cf2 MultiTap\cf0 .ar(\{4.0.rand\}!4, \{1.0.rand\}!4, dh[1], 0.7, bufnum: multibuf)\
+			\cf2 MultiTap\cf3 .ar(\{4.0.rand\}!4, \{1.0.rand\}!4, dh[0], 0.7, bufnum: multibuf),\
+			\cf2 MultiTap\cf3 .ar(\{4.0.rand\}!4, \{1.0.rand\}!4, dh[1], 0.7, bufnum: multibuf)\
 		];\
-		d = \cf2 Limiter\cf0 .ar( dl + (dh*3), 1, 0.25 );		\
-		\cf4 //sig = HardCompress.ar( d, speed:0.04, minAmp:0.1 );\cf0 \
-		sig = \cf2 BLowShelf\cf0 .ar( d, 100, 1.0, lowShelfAmt);\
-		sig = \cf2 Compander\cf0 .ar( sig, sig, -5.dbamp, 0.8, 1/5 );\
-		\cf2 Out\cf0 .ar( out, sig * outAmp );\
+		d = \cf2 Limiter\cf3 .ar( dl + (dh*3), 1, 0.25 );		\
+		\cf5 //sig = HardCompress.ar( d, speed:0.04, minAmp:0.1 );\cf3 \
+		sig = \cf2 BLowShelf\cf3 .ar( d, 100, 1.0, lowShelfAmt);\
+		sig = \cf2 Compander\cf3 .ar( sig, sig, -5.dbamp, 0.8, 1/5 );\
+		\cf2 Out\cf3 .ar( out, sig * outAmp );\
 	\});\
 	~earthDef.send(s);\
 	\
-	\cf5 "EARTH INITIALIZED - FLUX 2"\cf0 .postln;\
+	\cf6 "EARTH INITIALIZED - FLUX 2"\cf3 .postln;\
 \};\
 \
 ~prepare = \{\
 \
 \pard\pardeftab720\ql\qnatural
-\cf0 	~b1 = \cf2 Buffer\cf0 .read( s, \cf5 "/Users/Shared/earthFinal.aif"\cf0 );\
-	~b2 = \cf2 Buffer\cf0 .alloc(s, s.sampleRate*5 );\
-	~b_shape = \cf2 Buffer\cf0 .alloc(s, 1024, 1);\
-	~b_shape.sendCollection(\cf2 Signal\cf0 .chebyFill(512,[1,0.3, 0.1]).asWavetable);\
-	~ebus= \cf2 Bus\cf0 .alloc( \cf3 \\audio\cf0 , s, 2 );\
+\cf3 	~b1 = \cf2 Buffer\cf3 .read( s, \cf6 "/Users/Shared/earthFinal.aif"\cf3 );\
+	~b2 = \cf2 Buffer\cf3 .alloc(s, s.sampleRate*5 );\
+	~b_shape = \cf2 Buffer\cf3 .alloc(s, 1024, 1);\
+	~b_shape.sendCollection(\cf2 Signal\cf3 .chebyFill(512,[1,0.3, 0.1]).asWavetable);\
+	~ebus= \cf2 Bus\cf3 .alloc( \cf4 \\audio\cf3 , s, 2 );\
 	\
-	~pan1 = \cf2 ElementPanner\cf0 .new( ~ebus.index );\
-	~pan2 = \cf2 ElementPanner\cf0 .new( ~ebus.index+1 );\
+	~pan1 = \cf2 ElementPanner\cf3 .new( ~ebus.index );\
+	~pan2 = \cf2 ElementPanner\cf3 .new( ~ebus.index+1 );\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-\cf0 	\
-	~fluxClock = \cf2 TempoClock\cf0 .new;\
+\cf3 	\
+	~fluxClock = \cf2 TempoClock\cf3 .new;\
 	~fluxTask =\
-		\cf2 Task\cf0 (\{\
-		\cf4 //	0 min 0 sec\cf0 \
+		\cf2 Task\cf3 (\{\
+		\cf5 //	0 min 0 sec\cf3 \
 			~pan1.play;\
 			~pan2.play;\
 			5.wait;\
-		\cf4 //	0 min 5 sec	\cf0 \
-			~earth.set( \cf3 \\outAmp\cf0 , 10, \cf3 \\low\cf0 , 0.51, \cf3 \\high\cf0 , 0.5, \cf3 \\speed\cf0 , 0.04, \cf3 \\shapeAmp\cf0 , 1.0, \cf3 \\lowShelfAmt\cf0 , 0, \cf3 \\fadeTime\cf0 , 0 );\
-			~pan1.updateState( 10, \cf3 \\perim\cf0 , [1,0.2,1] ); \cf4 // north half perim\cf0 \
-			~pan2.updateState( 10, \cf3 \\perim\cf0 , [1,0.8,1] ); \cf4 // south half perim\cf0 \
+		\cf5 //	0 min 5 sec	\cf3 \
+			~earth.set( \cf4 \\outAmp\cf3 , 10, \cf4 \\low\cf3 , 0.51, \cf4 \\high\cf3 , 0.5, \cf4 \\speed\cf3 , 0.04, \cf4 \\shapeAmp\cf3 , 1.0, \cf4 \\lowShelfAmt\cf3 , 0, \cf4 \\fadeTime\cf3 , 0 );\
+			~pan1.updateState( 10, \cf4 \\perim\cf3 , [1,0.2,1] ); \cf5 // north half perim\cf3 \
+			~pan2.updateState( 10, \cf4 \\perim\cf3 , [1,0.8,1] ); \cf5 // south half perim\cf3 \
 			5.wait;\
-		\cf4 //	0 min 10 sec		\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 5, \cf3 \\low\cf0 , 0.1,\cf3 \\fadeTime\cf0 , 0.5);\
-			\cf4 // pause\cf0 \
+		\cf5 //	0 min 10 sec		\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 5, \cf4 \\low\cf3 , 0.1,\cf4 \\fadeTime\cf3 , 0.5);\
+			\cf5 // pause\cf3 \
 			5.wait;\
-		\cf4 //	0 min 15 sec		\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.2,\cf3 \\fadeTime\cf0 , 0.3);\
-			\cf4 // pause\cf0 \
+		\cf5 //	0 min 15 sec		\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.2,\cf4 \\fadeTime\cf3 , 0.3);\
+			\cf5 // pause\cf3 \
 			5.wait;\
-		\cf4 //	0 min 20 sec		\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.4, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 0.3);\
-			\cf4 // pause\cf0 \
+		\cf5 //	0 min 20 sec		\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.4, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 0.3);\
+			\cf5 // pause\cf3 \
 			5.wait;\
-		\cf4 //	0 min 25 sec			\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.6, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 1);\
+		\cf5 //	0 min 25 sec			\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.6, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 1);\
 			5.wait;\
-		\cf4 //	0 min 30 sec		\cf0 \
-			~pan1.updateState( 30, \cf3 \\perim\cf0 , [1,0.1,0] ); \cf4 // Cluster 01 NorthWest side of perimeter\cf0 \
-			~pan2.updateState( 30, \cf3 \\perim\cf0 , [1,1,0.1] ); \cf4 // Cluster 10 SouthWest of perimeter\cf0 \
+		\cf5 //	0 min 30 sec		\cf3 \
+			~pan1.updateState( 30, \cf4 \\perim\cf3 , [1,0.1,0] ); \cf5 // Cluster 01 NorthWest side of perimeter\cf3 \
+			~pan2.updateState( 30, \cf4 \\perim\cf3 , [1,1,0.1] ); \cf5 // Cluster 10 SouthWest of perimeter\cf3 \
 			20.wait;\
-		\cf4 //	0 min 50 sec\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.6, \cf3 \\high\cf0 , 0.65, \cf3 \\shapeAmp\cf0 , 0.25, \cf3 \\fadeTime\cf0 , 1);\
+		\cf5 //	0 min 50 sec\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.6, \cf4 \\high\cf3 , 0.65, \cf4 \\shapeAmp\cf3 , 0.25, \cf4 \\fadeTime\cf3 , 1);\
 			15.wait;\
-		\cf4 //	1 min 5 sec	\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.3, \cf3 \\high\cf0 , 0.5, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 1);\
+		\cf5 //	1 min 5 sec	\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.3, \cf4 \\high\cf3 , 0.5, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 1);\
 			15.wait;\
-		\cf4 //	1 min 20 sec	\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.4, \cf3 \\high\cf0 , 0.7, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 1);\
+		\cf5 //	1 min 20 sec	\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.4, \cf4 \\high\cf3 , 0.7, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 1);\
 			15.wait;\
-		\cf4 //	1 min 35 sec	\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.2, \cf3 \\high\cf0 , 0.5, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 1);\
+		\cf5 //	1 min 35 sec	\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.2, \cf4 \\high\cf3 , 0.5, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 1);\
 			25.wait;\
-		\cf4 //	2 min 0 sec\cf0 \
-			~earth.set( \cf3 \\outAmp\cf0 , 10, \cf3 \\low\cf0 , 0.15, \cf3 \\high\cf0 , 0.1, \cf3 \\speed\cf0 , 0.05, \cf3 \\shapeAmp\cf0 , 1.0, \cf3 \\lowShelfAmt\cf0 , 0, \cf3 \\fadeTime\cf0 , 10 );\
-	\cf4 //		~pan1.updateState( 10, \\rect, \{ [ 1, 0.9, LFNoise2.kr(0.25, 0.9, 0.1, 0.5), 0.15 ] \} ); // centeredEast, rand lento\cf0 \
-	\cf4 //		~pan2.updateState( 10, \\rect, \{ [ 1, 0.15, LFNoise2.kr(0.25,0.5,0.5,0.5), 0 ] \} ); // centeredWest, rand lento\cf0 \
-			~pan1.updateBehavior( 15, \cf3 \\marching\cf0 , (\cf3 \\freq\cf0 :0.001) ); \cf4 // perimeter rand windshield muy lento\cf0 \
-			~pan2.updateBehavior( 15, \cf3 \\marching\cf0 , (\cf3 \\freq\cf0 :0.001) ); \cf4 // perimeter rand windshield muy lento\cf0 \
+		\cf5 //	2 min 0 sec\cf3 \
+			~earth.set( \cf4 \\outAmp\cf3 , 10, \cf4 \\low\cf3 , 0.15, \cf4 \\high\cf3 , 0.1, \cf4 \\speed\cf3 , 0.05, \cf4 \\shapeAmp\cf3 , 1.0, \cf4 \\lowShelfAmt\cf3 , 0, \cf4 \\fadeTime\cf3 , 10 );\
+	\cf5 //		~pan1.updateState( 10, \\rect, \{ [ 1, 0.9, LFNoise2.kr(0.25, 0.9, 0.1, 0.5), 0.15 ] \} ); // centeredEast, rand lento\cf3 \
+	\cf5 //		~pan2.updateState( 10, \\rect, \{ [ 1, 0.15, LFNoise2.kr(0.25,0.5,0.5,0.5), 0 ] \} ); // centeredWest, rand lento\cf3 \
+			~pan1.updateBehavior( 15, \cf4 \\marching\cf3 , (\cf4 \\freq\cf3 :0.001) ); \cf5 // perimeter rand windshield muy lento\cf3 \
+			~pan2.updateBehavior( 15, \cf4 \\marching\cf3 , (\cf4 \\freq\cf3 :0.001) ); \cf5 // perimeter rand windshield muy lento\cf3 \
 			30.wait;\
-		\cf4 //	2 min 30 sec	\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.6, \cf3 \\high\cf0 , 0.75, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 0.3);\
+		\cf5 //	2 min 30 sec	\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.6, \cf4 \\high\cf3 , 0.75, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 0.3);\
 			30.wait;\
-		\cf4 //	3 min 0 sec\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.36, \cf3 \\high\cf0 , 0.65, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 0.3);\
+		\cf5 //	3 min 0 sec\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.36, \cf4 \\high\cf3 , 0.65, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 0.3);\
 			30.wait;\
-		\cf4 //	3 min 30 sec\cf0 \
-			~earth.set( \cf3 \\t_pulse\cf0 , 0.5, \cf3 \\low\cf0 , 0.26, \cf3 \\high\cf0 , 0.5, \cf3 \\shapeAmp\cf0 , 1, \cf3 \\fadeTime\cf0 , 0.3);	\
-			~pan1.updateState( 5, \cf3 \\rect\cf0 , \{ [ 1, 0.5, \cf2 SinOsc\cf0 .kr(\cf2 LFNoise2\cf0 .kr(1,1,5,0.1),0,0.5,0.5), 0 ] \} ); \cf4 // granulated rand fast\cf0 \
-			~pan2.updateState( 5, \cf3 \\rect\cf0 , \{ [ 1, 0.5, \cf2 LFNoise2\cf0 .kr(\cf2 LFNoise2\cf0 .kr(1,10,15,10),1,0.5,0.5), 0 ] \} ); \cf4 // granulated super rand fast\cf0 \
-			\cf4 // grow quickly\cf0 \
-			~earth.set(\cf3 \\outAmp\cf0 , 10, \cf3 \\low\cf0 , 0.7, \cf3 \\high\cf0 , 0.6, \cf3 \\speed\cf0 , 0.35, \cf3 \\shapeAmp\cf0 , 0.5, \cf3 \\fadeTime\cf0 , 20);\
+		\cf5 //	3 min 30 sec\cf3 \
+			~earth.set( \cf4 \\t_pulse\cf3 , 0.5, \cf4 \\low\cf3 , 0.26, \cf4 \\high\cf3 , 0.5, \cf4 \\shapeAmp\cf3 , 1, \cf4 \\fadeTime\cf3 , 0.3);	\
+			~pan1.updateState( 5, \cf4 \\rect\cf3 , \{ [ 1, 0.5, \cf2 SinOsc\cf3 .kr(\cf2 LFNoise2\cf3 .kr(1,1,5,0.1),0,0.5,0.5), 0 ] \} ); \cf5 // granulated rand fast\cf3 \
+			~pan2.updateState( 5, \cf4 \\rect\cf3 , \{ [ 1, 0.5, \cf2 LFNoise2\cf3 .kr(\cf2 LFNoise2\cf3 .kr(1,10,15,10),1,0.5,0.5), 0 ] \} ); \cf5 // granulated super rand fast\cf3 \
+			\cf5 // grow quickly\cf3 \
+			~earth.set(\cf4 \\outAmp\cf3 , 10, \cf4 \\low\cf3 , 0.7, \cf4 \\high\cf3 , 0.6, \cf4 \\speed\cf3 , 0.35, \cf4 \\shapeAmp\cf3 , 0.5, \cf4 \\fadeTime\cf3 , 20);\
 			20.wait;\
-		\cf4 //	3 min 50 sec		\cf0 \
-			~pan1.updateBehavior( 10, \cf3 \\marching\cf0 , (\cf3 \\freq\cf0 :0.05) ); \cf4 // perimeter rand windshield muy lento\cf0 \
-			~pan2.updateBehavior( 5, \cf3 \\marching\cf0 , (\cf3 \\freq\cf0 :0.05) ); \cf4 // perimeter rand windshield muy lento\cf0 \
+		\cf5 //	3 min 50 sec		\cf3 \
+			~pan1.updateBehavior( 10, \cf4 \\marching\cf3 , (\cf4 \\freq\cf3 :0.05) ); \cf5 // perimeter rand windshield muy lento\cf3 \
+			~pan2.updateBehavior( 5, \cf4 \\marching\cf3 , (\cf4 \\freq\cf3 :0.05) ); \cf5 // perimeter rand windshield muy lento\cf3 \
 			20.wait;\
-		\cf4 //	4 min 10 sec	\cf0 \
-			~pan1.updateState( 10, \cf3 \\perim\cf0 , [1,0.5,0.1] ); \cf4 // Cristo\cf0 \
-			~pan2.updateState( 12, \cf3 \\perim\cf0 , [1,0.5,0.1] ); \cf4 // Cristo\cf0 \
+		\cf5 //	4 min 10 sec	\cf3 \
+			~pan1.updateState( 10, \cf4 \\perim\cf3 , [1,0.5,0.1] ); \cf5 // Cristo\cf3 \
+			~pan2.updateState( 12, \cf4 \\perim\cf3 , [1,0.5,0.1] ); \cf5 // Cristo\cf3 \
 			20.wait;\
-		\cf4 //	4 min 30 sec		\cf0 \
-			~pan1.updateState( 2, \cf3 \\perim\cf0 , \{ [ 1, 0.5, \cf2 SinOsc\cf0 .kr(0.1,0,0.5,0.5) ] \} ); \cf4 // se expande y contrae al norte y al sur desde el cristo\cf0 \
-			~pan2.updateState( 2, \cf3 \\perim\cf0 , \{ [ 1, 0.5, \cf2 LFNoise2\cf0 .kr(0.75,0.5,0.1) ] \} ); \cf4 // se expande y contrae al norte y al sur desde el cristo rand\cf0 \
+		\cf5 //	4 min 30 sec		\cf3 \
+			~pan1.updateState( 2, \cf4 \\perim\cf3 , \{ [ 1, 0.5, \cf2 SinOsc\cf3 .kr(0.1,0,0.5,0.5) ] \} ); \cf5 // se expande y contrae al norte y al sur desde el cristo\cf3 \
+			~pan2.updateState( 2, \cf4 \\perim\cf3 , \{ [ 1, 0.5, \cf2 LFNoise2\cf3 .kr(0.75,0.5,0.1) ] \} ); \cf5 // se expande y contrae al norte y al sur desde el cristo rand\cf3 \
 			\
 			20.wait;\
-		\cf4 //	4 min 50 sec		\cf0 \
-			~pan1.updateBehavior( 15, \cf3 \\centered\cf0  ); \cf4 // al centro del espacio: cl 4, 5, 7, 8\cf0 \
-			~pan2.updateBehavior( 10, \cf3 \\centered\cf0  ); \cf4 // al centro del espacio: cl 4, 5, 7, 8\cf0 \
+		\cf5 //	4 min 50 sec		\cf3 \
+			~pan1.updateBehavior( 15, \cf4 \\centered\cf3  ); \cf5 // al centro del espacio: cl 4, 5, 7, 8\cf3 \
+			~pan2.updateBehavior( 10, \cf4 \\centered\cf3  ); \cf5 // al centro del espacio: cl 4, 5, 7, 8\cf3 \
 			\
 			20.wait;\
-		\cf4 //	5 min 10 sec	\cf0 \
-			~pan1.updateBehavior( 10, \cf3 \\centeredWestern\cf0  ); \cf4 // al Oeste del espacio: cl 4, 7\cf0 \
-			~pan2.updateBehavior( 15, \cf3 \\centeredWestern\cf0  ); \cf4 // al Oeste del espacio: cl 4, 7\cf0 \
+		\cf5 //	5 min 10 sec	\cf3 \
+			~pan1.updateBehavior( 10, \cf4 \\centeredWestern\cf3  ); \cf5 // al Oeste del espacio: cl 4, 7\cf3 \
+			~pan2.updateBehavior( 15, \cf4 \\centeredWestern\cf3  ); \cf5 // al Oeste del espacio: cl 4, 7\cf3 \
 			20.wait;\
-		\cf4 //	5 min 30 sec	\cf0 \
-			~pan1.updateState( 10, \cf3 \\rect\cf0 , \{ [ 1, 0.9, \cf2 LFNoise2\cf0 .kr(0.25, 0.9, 0.1, 0.5), 0.15 ] \} ); \cf4 // centeredEast, rand lento\cf0 \
-			~pan2.updateState( 10, \cf3 \\rect\cf0 , \{ [ 1, 0.15, \cf2 LFNoise2\cf0 .kr(0.25,0.5,0.5,0.5), 0 ] \} ); \cf4 // centeredWest, rand lento\cf0 \
-			~earth.set( \cf3 \\outAmp\cf0 , 5, \cf3 \\low\cf0 , 0.51, \cf3 \\high\cf0 , 0.7, \cf3 \\speed\cf0 , 10, \cf3 \\shapeAmp\cf0 , 1.0, \cf3 \\lowShelfAmt\cf0 , 0, \cf3 \\fadeTime\cf0 , 30 );\
+		\cf5 //	5 min 30 sec	\cf3 \
+			~pan1.updateState( 10, \cf4 \\rect\cf3 , \{ [ 1, 0.9, \cf2 LFNoise2\cf3 .kr(0.25, 0.9, 0.1, 0.5), 0.15 ] \} ); \cf5 // centeredEast, rand lento\cf3 \
+			~pan2.updateState( 10, \cf4 \\rect\cf3 , \{ [ 1, 0.15, \cf2 LFNoise2\cf3 .kr(0.25,0.5,0.5,0.5), 0 ] \} ); \cf5 // centeredWest, rand lento\cf3 \
+			~earth.set( \cf4 \\outAmp\cf3 , 5, \cf4 \\low\cf3 , 0.51, \cf4 \\high\cf3 , 0.7, \cf4 \\speed\cf3 , 10, \cf4 \\shapeAmp\cf3 , 1.0, \cf4 \\lowShelfAmt\cf3 , 0, \cf4 \\fadeTime\cf3 , 30 );\
 			120.wait;\
-		\cf4 //	7 min 30 sec\cf0 \
-			~earth.set( \cf3 \\outAmp\cf0 , 5, \cf3 \\low\cf0 , 0.51, \cf3 \\high\cf0 , 0.7, \cf3 \\speed\cf0 , 1, \cf3 \\shapeAmp\cf0 , 1.0, \cf3 \\lowShelfAmt\cf0 , 0, \cf3 \\fadeTime\cf0 , 20 );\
-			~\cf2 this\cf0 .prepareNext();\
+		\cf5 //	7 min 30 sec\cf3 \
+			~earth.set( \cf4 \\outAmp\cf3 , 5, \cf4 \\low\cf3 , 0.51, \cf4 \\high\cf3 , 0.7, \cf4 \\speed\cf3 , 1, \cf4 \\shapeAmp\cf3 , 1.0, \cf4 \\lowShelfAmt\cf3 , 0, \cf4 \\fadeTime\cf3 , 20 );\
 			150.wait;\
-		\cf4 //	8 min 30 sec\cf0 \
-			\cf4 // RAPS STARTS\cf0 \
-		\cf4 //	10 min 0 sec & Fade Out\cf0 \
-			~earth.set( \cf3 \\outAmp\cf0 , 0, \cf3 \\low\cf0 , 0.51, \cf3 \\high\cf0 , 0.7, \cf3 \\speed\cf0 , 1, \cf3 \\shapeAmp\cf0 , 1.0, \cf3 \\lowShelfAmt\cf0 , 0, \cf3 \\fadeTime\cf0 , 20 );\
-			~\cf2 this\cf0 .playNext();\
+		\cf5 //	8 min 30 sec\cf3 \
+			\cf5 // RAPS STARTS\cf3 \
+		\cf5 //	10 min 0 sec & Fade Out\cf3 \
+			~earth.set( \cf4 \\outAmp\cf3 , 0, \cf4 \\low\cf3 , 0.51, \cf4 \\high\cf3 , 0.7, \cf4 \\speed\cf3 , 1, \cf4 \\shapeAmp\cf3 , 1.0, \cf4 \\lowShelfAmt\cf3 , 0, \cf4 \\fadeTime\cf3 , 20 );\
 			30.wait;\
-			~this.cleanup();\
-		\cf4 //	10 min 30 sec	 free all\cf0 \
-		\cf4 /////// REPLACE WITH ~THIS.CLEANUP??? //////\cf0 \
-		\cf4 /*	" EARTH is cleaning up ".postln;\
+		\cf5 //	10 min 30 sec	 free all\cf3 \
+		\cf5 /////// REPLACE WITH ~THIS.CLEANUP??? //////\cf3 \
+			\cf6 " EARTH is cleaning up "\cf3 .postln;\
 			~pan1.free;\
 			~pan2.free;\
 			~earth.free;\
-		*/\cf0 \
+\
 		\}, ~fluxClock);\
 \
-	\cf5 "EARTH PREPARED - FLUX 2"\cf0 .postln;\
+	\cf6 "EARTH PREPARED - FLUX 2"\cf3 .postln;\
 \};\
 \
 ~play = \{\
 \
-	~playTask= \cf2 Task\cf0 (\{	\
-		~earth = \cf2 Synth\cf0 ( \cf3 \\earth\cf0 , [\cf3 \\randSeed\cf0 , \cf2 SeedMaster\cf0 .seed, \cf3 \\out\cf0 , ~ebus.index, \cf3 \\earthbuf\cf0 , ~b1.bufnum, \cf3 \\multibuf\cf0 , ~b2.bufnum, \cf3 \\shapebuf\cf0 , ~b_shape.bufnum ]);\
+	~playTask= \cf2 Task\cf3 (\{	\
+		~earth = \cf2 Synth\cf3 ( \cf4 \\earth\cf3 , [\cf4 \\randSeed\cf3 , \cf2 SeedMaster\cf3 .seed, \cf4 \\out\cf3 , ~ebus.index, \cf4 \\earthbuf\cf3 , ~b1.bufnum, \cf4 \\multibuf\cf3 , ~b2.bufnum, \cf4 \\shapebuf\cf3 , ~b_shape.bufnum ]);\
 		2.wait;\
 		~fluxTask.play;\
 	\});\
 	~playTask.play;\
 		\
-	\cf5 "EARTH PLAYING - FLUX 2"\cf0 .postln;\
+	\cf6 "EARTH PLAYING - FLUX 2"\cf3 .postln;\
 \};\
 \
 ~free = \{\
 	~fluxTask.stop.reset; ~fluxClock.clear;\
-	[ ~pan1, ~pan2, ~earth ].do(\cf2 _\cf0 .free);\
-	[ ~b1, ~b2, ~b_shape, ~ebus ].do(\cf2 _\cf0 .free);\
+	[ ~pan1, ~pan2, ~earth ].do(\cf2 _\cf3 .free);\
+	[ ~b1, ~b2, ~b_shape, ~ebus ].do(\cf2 _\cf3 .free);\
 	~playTask.stop.reset;\
-	~pan1 = ~pan2 = ~earth = ~b1 = ~b2 = ~b_shape = ~ebus = ~fluxTask = ~fluxClock = ~playTask = \cf2 nil\cf0 ;\
+	~pan1 = ~pan2 = ~earth = ~b1 = ~b2 = ~b_shape = ~ebus = ~fluxTask = ~fluxClock = ~playTask = \cf2 nil\cf3 ;\
 	\
-	\cf5 "EARTH FREEING - FLUX 2"\cf0 .postln;\
+	\cf6 "EARTH FREEING - FLUX 2"\cf3 .postln;\
 	\
 \};\
 \
-\cf2 MiroEnvironment\cf0 .get(\cf3 \\flujo2_tierra\cf0 ).pop;\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-\cf4 //MiroEnvironment.gui}
+\cf2 MiroEnvironment\cf3 .get(\cf4 \\flujo2_tierra\cf3 ).pop;\
+\cf5 //MiroEnvironment.gui}
