@@ -4,12 +4,13 @@ MMixer {
 		cmdDown=false;
 	
 	*new {
-		| rerouteSynth, ampBus, server |
-		^super.new.init( rerouteSynth, ampBus, server );
+		| rerouteSynth, ampBus, server, osc |
+		^super.new.init( rerouteSynth, ampBus, server, osc );
 	}
 	
 	init {
-		| rs, bus, s |
+		| rs, bus, s, osc |
+		var responders;
 		var faderNumber, groupSizes, xPos = 5, r;
 		var spec = ControlSpec( -60, 6, \db, default:0, units:"dB" );
 		this.loadPresets();	
@@ -26,9 +27,10 @@ MMixer {
 				saveName.string_( v.items[ v.value ].asString );
 			});
 			
-		saveName = SCTextField( window, Rect( 200, 9, 60, 18));
-		saveButton = SCButton( window, Rect( 265, 5, 30, 22) )
-			.states_([["save", Color.black, Color.blue(0.7)]])
+		saveName = SCTextField( window, Rect( 150, 9, 110, 18));
+		saveButton = SmoothButton( window, Rect( 265, 10, 30, 18) )
+			.radius_(1).border_(1.5).extrude_(true)
+			.states_([["save", Color.black, Color.blue(0.8).sat_(0.2)]])
 			.action_({
 				this.presets[ saveName.string ] = faders.collect( _.value );
 				this.savePresets();
@@ -54,7 +56,9 @@ MMixer {
 			});
 			faders.addAll( group );
 
-			SCButton( window, Rect( xPos-(size*23), 236, size*23-3, 16 ) )
+			SmoothButton( window, Rect( xPos-(size*23), 238, size*23-3, 16 ) )
+				.radius_(2).border_(1.5)
+				.focusColor_(Color.clear)
 				.states_([["( )",Color.black, Color.grey],["(*)", Color.black, Color.green]])
 				.action_({
 					| v |
@@ -71,8 +75,9 @@ MMixer {
 			
 			xPos = xPos + 5;
 		});
-		masterVolume = SCSlider( window, Rect( xPos, 45, 20, 190 ))
+		masterVolume = SmoothSlider( window, Rect( xPos, 45, 20, 190 ))
 			.background_( Color.new(0.9, 0.6, 0.6).alpha_(0.7))
+			.mode_(\move)
 			.value_(1)
 			.action_({
 				|v|
@@ -89,6 +94,36 @@ MMixer {
 			r = r.union( child.bounds )
 		});
 		window.bounds_( r.resizeBy(5,5) );
+		
+		~iphoneoscin.notNil.if({
+			responders = List.new(40);
+			40.do({
+				| i |
+				var throttle;
+				var dir = (i>=20).if("south", "north");
+				var path = ("/mixer" ++ dir ++ "/fader" ++ i );
+				throttle = Collapse({
+					| value |
+					~iphoneoscout.sendMsg( path, value );
+				}, 0.1);
+				path.postln;
+				faders[i].oscAction = throttle;
+				responders.add( 
+					OSCresponder( ~iphoneoscin, path, { 
+						| time, node, msg |
+						faders[i].value_( faders[i].spec.map(msg[1]), noOsc:true );
+					}).add
+				);
+				faders[i].value_(faders[i].value);
+			});
+		});
+		
+		window.onClose_({
+			responders.do(_.remove());
+		});
+		
+		
+		
 		window.front;
 	}
 	
@@ -130,14 +165,14 @@ MMixer {
 
 	updatePopupList {
 		popupList.items_( presets.keys.asArray );
-	}
+	}	
 }
 
 MFader {
 	classvar emptyArray;
 	var server, window, <bounds, node, <bus, num, <value,
-		slider, display, spec, linked=false, 
-		<linked, updateBundle;
+		slider, display, <spec, linked=false, 
+		<linked, updateBundle, <>oscAction;
 	
 	*classInit {
 		emptyArray = nil!20;
@@ -152,7 +187,8 @@ MFader {
 		| ...args |
 		#window, bounds, node, bus, num, value, server = args;
 		spec = ControlSpec( -30, 3, \db, default:value, units:"dB" );
-		slider = SCSlider( window, bounds.copy.top_(bounds.top+15).height_(bounds.height-15) )
+		slider = SmoothSlider( window, bounds.copy.top_(bounds.top+15).height_(bounds.height-15) )
+			.mode_(\move)
 			.action_({
 				| v |
 				this.updateLinked( spec.map( v.value ) - value );
@@ -170,11 +206,15 @@ MFader {
 	}
 
 	value_{
-		| val, noMsg=false |
+		| val, noMsg=false, noOsc=false |
 		value = val;
+		slider.value = spec.unmap(value);
 		if( noMsg.not, {
 			this.sendMessage()
 		});
+		if( noOsc.not, {
+			oscAction.value( spec.unmap(value) );
+		})
 	}
 	
 	relativeValue_{
