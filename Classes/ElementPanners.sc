@@ -54,8 +54,7 @@ ElementPanner {
 		| server |
 		vertPannerDef = SynthDef( \vertPanner, {
 			| audioIn, controlIn, on=1, onTime=5 |
-//			var amp, x, y, width;
-			var amp, direction, elevation, distance, ambiSig;
+			var amp, x, y, width;
 			var groups;
 			var monoSig, leftMono, rightMono, left, right,
 				la, lb, lc, ld, ra, rb, rc, rd, n,
@@ -63,15 +62,9 @@ ElementPanner {
 			SeedMaster.ugen;
 			on = Slew.kr( on.round(1), onTime.reciprocal, onTime.reciprocal );
 			PauseSelf.kr( (on>0).not );
-			
-			
-			// This is all specific to the tertulia speaker setup. 
-/*
-			// These are the parameters you're controlling, and using to pan the sound
+				
 			#amp, x, y, width = In.kr( controlIn, 4 );
-
-			// The rest does the actual panning, 
-			// but way more complex than needed for space lab
+		
 			x = x*2-1; y = (y*2-1)*(3/5);
 			x = (x*(1-width)) + (0.5*width);
 			width = (width*2)+2;
@@ -90,25 +83,16 @@ ElementPanner {
 				| group, i |
 				Out.ar( group.postln, outChans[i] );
 			});
-*/
-			
-			// A basic non-Tertulia example.
-			#amp, direction, elevation, distance = In.kr( controlIn, 4 );
-			monoSig = In.ar( audioIn ) * on;
-			ambiSig = BFEncode1.ar( monoSig, direction, elevation, distance, amp );
-			Out.ar( 0, ambiSig ); // out to your ambisonic decoder
-			
-			// Now, just make sure you use \vertPanner.
 		});
 		
 		perimeterPannerDef = SynthDef( \perimeterPanner, {
-			| 	audioIn, controlIn, on=1, onTime=5 |
+			| audioIn, controlIn, on=1, onTime=5 |
 			var amp, pos, width;
 			var groups;
 			var monoSig,
 				a, b, c, d, e, f, g, h, n,
 				outChans, v;
-/*			SeedMaster.ugen;
+			SeedMaster.ugen;
 			on = Slew.kr( on.round(1), onTime.reciprocal, onTime.reciprocal );
 			PauseSelf.kr( (on>0).not );
 												
@@ -133,7 +117,7 @@ ElementPanner {
 				| group, i |
 				Out.ar( group.postln, outChans[i] );
 			});
-*/		});
+		});
 		
 		perimeterPannerDef.send( server ).store;
 		vertPannerDef.send( server ).store;
@@ -176,7 +160,7 @@ ElementPanner {
 	
 	play {
 		server.makeBundle( nil, {
-			this.setRegion(\rect);
+			this.setRegion(\perim);
 			vertControlSynth.source = [0,0,0,0];
 			perimControlSynth.source = [0,0,0];
 		})
