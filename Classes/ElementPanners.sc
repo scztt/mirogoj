@@ -132,7 +132,17 @@ ElementPanner {
 		|eb|
 		server = this.class.server;
 		elementBus = eb;
-
+		
+		if( elementBus.isKindOf(Bus), {
+			elementBus = elementBus.index;
+		});
+		if( elementBus.isKindOf(CtkAudio), {
+			elementBus = elementBus.bus;
+		});
+		if( elementBus.isNumber.not, {
+			"Passed something to ElementPanner that wasn't a Bus or Bus number!!!!!!".throw;
+		});
+		
 		vertControlSynth = NodeProxy.new( server, \control, 4 );
 		vertControlSynth.parentGroup_(GroupManager.get(server).controls);
 		vertControlSynth.fadeTime = 10;
