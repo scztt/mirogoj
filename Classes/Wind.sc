@@ -17,7 +17,8 @@ Wind {
 				grains = GrainFM.ar(1, trigger, grainPeriod, 
 					freq, freq * LFNoise1.kr(modrate).range(0.2, 2), 
 					LFNoise1.kr.range(4, dexMax),
-					0, -1, Lag.kr(grainAmp, 6) );	
+					0, -1, Lag.kr(grainAmp, 6),
+					maxGrains:1024 );	
 				Out.ar(out, grains);
 				}),
 						
