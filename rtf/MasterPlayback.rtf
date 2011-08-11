@@ -1,69 +1,77 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1038
+{\rtf1\ansi\ansicpg1252\cocoartf1138
 {\fonttbl\f0\fnil\fcharset0 Monaco;\f1\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red96\green96\blue96;\red0\green115\blue0;
-\red0\green0\blue191;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+{\colortbl;\red255\green255\blue255;\red0\green102\blue0;\red0\green0\blue0;\red102\green0\blue102;
+\red128\green0\blue0;\red0\green0\blue179;\red179\green0\blue179;\red0\green0\blue179;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs18 \cf2 /////////////////////////////////////////////////////////////////////////\cf0 \
-\cf2 // Load files\cf0 \
-\cf3 "Loading all score files..."\cf0 .log(
-\f1\fs24 \cf4 \\miroStatus\cf0 );
+\f0\fs18 \cf2 /////////////////////////////////////////////////////////////////////////\cf3 \
+\cf2 // Load files\cf3 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf4 "Loading all score files..."\cf3 .log(
+\f1\fs24 \cf5 \\miroStatus\cf3 );
 \f0\fs18 \
-p = \cf5 PathName\cf0 ( \cf3 "~/Library/Application Support/SuperCollider/Extensions/mirogoj/rtf/SCORES_MEnv"\cf0 .standardizePath );\
+p = \cf6 PathName\cf3 ( \cf4 "~/Library/Application Support/SuperCollider/Extensions/mirogoj/rtf/SCORES_MEnv"\cf3 .standardizePath );\
 \
 p.files.collect(\{\
-	\cf5 | file |\cf0 \
-	file = \cf5 File\cf0 ( file.fullPath, \cf3 "r"\cf0  );\
+	\cf6 | file |\cf3 \
+	\cf6 PathName\cf3 (file.fullPath).fileName.postln.log(\cf5 \\miroStatus\cf3 , \cf7 1\cf3 );\
+	\cf8 MiroEnvironment\cf3 .executingPath = file.fullPath;\
+	file = \cf6 File\cf3 ( file.fullPath, \cf4 "r"\cf3  );\
 	file.readAllStringRTF().interpret;\
-	file.close()\
+	file.close();\
+	\cf6 MiroEnvironment\cf3 .executingPath = \cf6 nil\cf3 ;\
 \});\
 \
 \
 \
-\cf5 MiroEnvironment\cf0 .gui;
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf6 MiroEnvironment\cf3 .gui;
 \fs22 \
 
-\fs18 \cf2 /////////////////////////////////////////////////////////////////////////\cf0 \
-\cf2 // Initialize\cf0 \
-\cf3 "Initializing environments..."\cf0 .log(
-\f1\fs24 \cf4 \\miroStatus\cf0 );
+\fs18 \cf2 /////////////////////////////////////////////////////////////////////////\cf3 \
+\cf2 // Initialize\cf3 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf4 "Initializing environments..."\cf3 .log(
+\f1\fs24 \cf5 \\miroStatus\cf3 );
 \f0\fs18 \
 fork \{\
-	\cf5 MiroEnvironment\cf0 .environments.do(\{\
-		\cf5 | env |\cf0 \
+	\cf6 MiroEnvironment\cf3 .environments.do(\{\
+		\cf6 | env |\cf3 \
 		env.initialize();\
-		1.wait;\
+		\cf7 1\cf3 .wait;\
 	\});\
 \};\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\fs22 \
+\fs22 \cf3 \
 fork \{\
-	while( \{MiroEnvironment.environments.select(\{ |env| env.initialized==false \}).notEmpty\}, \{\
-		0.5.wait;\
+	while( \{\cf6 MiroEnvironment\cf3 .environments.select(\{ \cf6 |env|\cf3  env.initialized==\cf6 false\cf3  \}).notEmpty\}, \{\
+		\cf7 0.5\cf3 .wait;\
 	\});\
 	\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\fs18 \cf3 	"Building player..."\cf0 .log(
-\f1\fs24 \cf4 \\miroStatus\cf0 )\cf4 ;
-\f0\fs22 \cf0 \
+\fs18 \cf3 	\cf4 "Building player..."\cf3 .log(
+\f1\fs24 \cf5 \\miroStatus\cf3 );
+\f0\fs22 \
 	~masterPlayer =\
-		\cf5 MiroPlayer\cf0 ([\
-			[ \cf4 \\sinc1_campanas\cf0  ],\
-			[ \cf4 \\flujo1_viento\cf0 ,  ],\
-			[ \cf4 \\raps1\cf0  ],\
-			[ \cf4 \\sinc2_geisers\cf0  ],\
-			[ \cf4 \\flujo2_tierra\cf0  ],\
-			[ \cf4 \\raps2\cf0  ],\
-			[ \cf4 \\sinc3_aloalo\cf0  ],\
-			[ \cf4 \\flujo3_agua\cf0 , \cf4 \\flujo3_vientos\cf0  ],\
-			[ \cf4 \\raps3\cf0  ],\
-			[ \cf4 \\sinc4_canon\cf0  ],\
-			[ \cf4 \\flujo4_voces\cf0  ],\
-			[ \cf4 \\sinc5_respiraciones\cf0  ],\
-			[ \cf4 \\flujo5_vientos\cf0 , \cf4 \\flujo5_agua\cf0 , \cf4 \\flujo5_tierra\cf0  ],\
-			[ \cf4 \\sinc6_golem\cf0  ],\
-			[ \cf4 \\coda_elementos\cf0  ]\
+		\cf6 MiroPlayer\cf3 ([\
+			[ \cf5 \\sinc1_campanas\cf3  ],\
+			[ \cf5 \\flujo1_viento\cf3 ,  ],\
+			[ \cf5 \\raps1\cf3  ],\
+			[ \cf5 \\sinc2_geisers\cf3  ],\
+			[ \cf5 \\flujo2_tierra\cf3  ],\
+			[ \cf5 \\raps2\cf3  ],\
+			[ \cf5 \\sinc3_aloalo\cf3  ],\
+			[ \cf5 \\flujo3_agua\cf3 , \cf5 \\flujo3_vientos\cf3  ],\
+			[ \cf5 \\raps3\cf3  ],\
+			[ \cf5 \\sinc4_canon\cf3  ],\
+			[ \cf5 \\flujo4_voces\cf3  ],\
+			[ \cf5 \\sinc5_respiraciones\cf3  ],\
+			[ \cf5 \\flujo5_vientos\cf3 , \cf5 \\flujo5_agua\cf3 , \cf5 \\flujo5_tierra\cf3  ],\
+			[ \cf5 \\sinc6_golem\cf3  ],\
+			[ \cf5 \\coda_elementos\cf3  ]\
 		]);\
 	\{ ~masterPlayer.advanceGUI \}.defer;\
-	//~masterPlayer.play;\
+	\cf2 //~masterPlayer.play;\cf3 \
 \};}
