@@ -1,16 +1,17 @@
-{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
-{\fonttbl\f0\fnil\fcharset0 Monaco;}
-{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
-\red0\green115\blue0;\red96\green96\blue96;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fnil\fcharset0 Monaco;\f1\fnil\fcharset0 BitstreamVeraSans-Roman;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue191;\red0\green115\blue0;
+\red96\green96\blue96;\red128\green0\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs22 \cf2 //// TO BE COMPLETE, NICO NEEDS TO BOUNCE THE SOUNDFILES\cf3 \
+\f0\fs22 \cf2 //// TO BE COMPLETE, NICO NEEDS TO BOUNCE THE SOUNDFILES\cf0 \
 \
-\cf4 MiroEnvironment\cf3 .get(\cf5 \\sinc4_canon\cf3 ).push;\
+\cf3 MiroEnvironment\cf0 .get(\cf4 \\sinc4_canon\cf0 ).push;\
 \
 ~init = \{\
 \
-	~vg = \cf4 VirtualSpeakerArray\cf3 .get.groupings;\
+	~vg = \cf3 VirtualSpeakerArray\cf0 .get.groupings;\
 	~leftChannels = [\
 		~vg[0].atAll([0,2]),\
 		~vg[1].atAll([0,2]),\
@@ -47,62 +48,70 @@
 		~vg[11].atAll([1,3])\
 	];\
 	\
-	~rightChannels = ~rightChannels.collect( \cf4 _\cf3 .collect( \cf4 _\cf3 .busNum ) );\
-	~leftChannels = ~leftChannels.collect( \cf4 _\cf3 .collect( \cf4 _\cf3 .busNum ) );\
+	~rightChannels = ~rightChannels.collect( \cf3 _\cf0 .collect( \cf3 _\cf0 .busNum ) );\
+	~leftChannels = ~leftChannels.collect( \cf3 _\cf0 .collect( \cf3 _\cf0 .busNum ) );\
 \
-	\cf4 SynthDef\cf3 ( \cf5 \\Stereo12ChanPlayer\cf3 , \{\
-		\cf4 | amp, dur=20 |\cf3 \
-		\cf4 var\cf3  env, envGen, buffers, signals;	\
-		buffers = \cf4 Control\cf3 .names([\cf5 \\buffers\cf3 ]).kr( 0!12 );\
-		env = \cf4 Control\cf3 .names([\cf5 \\env\cf3 ]).kr( \cf4 Env\cf3 (1!12, [1]++(0!10)) );\
-		envGen = \cf4 EnvGen\cf3 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
-		signals = \cf4 DiskIn\cf3 .ar( 2, buffers, 0 ) * envGen;\
+	\cf3 SynthDef\cf0 ( \cf4 \\Stereo12ChanPlayer\cf0 , \{\
+		\cf3 | amp, dur=20 |\cf0 \
+		\cf3 var\cf0  env, envGen, buffers, signals;	\
+		buffers = \cf3 Control\cf0 .names([\cf4 \\buffers\cf0 ]).kr( 0!12 );\
+		env = \cf3 Control\cf0 .names([\cf4 \\env\cf0 ]).kr( \cf3 Env\cf0 (1!12, [1]++(0!10)) );\
+		envGen = \cf3 EnvGen\cf0 .kr( env, timeScale:dur, levelScale:amp, doneAction:2 );\
+		signals = \cf3 DiskIn\cf0 .ar( 2, buffers, 0 ) * envGen;\
 		signals[5] = signals[5]*0.5;\
 		signals[8] = signals[8]*0.5;\
 		signals.do(\{\
-			\cf4 |sig, i|\cf3 \
-			\cf4 Out\cf3 .ar( ~rightChannels[i], sig[0] );\
-			\cf4 Out\cf3 .ar( ~leftChannels[i], sig[1] );\
+			\cf3 |sig, i|\cf0 \
+			\cf3 Out\cf0 .ar( ~rightChannels[i], sig[0] );\
+			\cf3 Out\cf0 .ar( ~leftChannels[i], sig[1] );\
 		\});\
 	\}).send(s).store;\
 \
-	\cf6 "SYNCHRONY INITIALIZED - CANON"\cf3 .postln;\
+	\cf5 "SYNCHRONY INITIALIZED - CANON"\cf0 .
+\f1\fs24 log(\cf6 \\
+\f2 \cf4 miroStatus, 1
+\f1 \cf0 )
+\f0\fs22 ;\
 \};\
 \
 ~prepare = \{\
 	~buffers = [\
-			\cf4 Buffer\cf3 .cueSoundFile(s,\cf6 "/Users/Shared/sincronia_4_cannon_cluster_01.aif"\cf3  , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_02.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_03.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_04.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_05.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_06.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_07.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_08.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_08.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_09.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_10.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_11.aif"\cf3 , 0, 2),\
-			\cf4 Buffer\cf3 .cueSoundFile(s, \cf6 "/Users/Shared/sincronia_4_cannon_cluster_12.aif"\cf3 , 0, 2)\
+			\cf3 Buffer\cf0 .cueSoundFile(s,\cf5 "/Users/Shared/sincronia_4_cannon_cluster_01.aif"\cf0  , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_02.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_03.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_04.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_05.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_06.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_07.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_08.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_08.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_09.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_10.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_11.aif"\cf0 , 0, 2),\
+			\cf3 Buffer\cf0 .cueSoundFile(s, \cf5 "/Users/Shared/sincronia_4_cannon_cluster_12.aif"\cf0 , 0, 2)\
 		];\
 			\
-	~playClock = \cf4 TempoClock\cf3 .new;\
+	~playClock = \cf3 TempoClock\cf0 .new;\
 	~playTask = \
-		\cf4 Task\cf3 (\{ \cf4 |starttime|\cf3 \
-			\cf4 var\cf3  totalDur;\
+		\cf3 Task\cf0 (\{ \cf3 |starttime|\cf0 \
+			\cf3 var\cf0  totalDur;\
 			totalDur = 5*60;\
 			\
-			~synth = \cf4 Synth\cf3 ( \cf5 \\Stereo12ChanPlayer\cf3 ,args:[ \cf5 \\amp\cf3 , -33.dbamp, \cf5 \\dur\cf3 , 5*60, \cf5 \\buffers\cf3 , ~buffers.collect(\{ \cf4 |buf|\cf3  buf.bufnum \}) ], 	target:\cf4 GroupManager\cf3 .get.synths );\
+			~synth = \cf3 Synth\cf0 ( \cf4 \\Stereo12ChanPlayer\cf0 ,args:[ \cf4 \\amp\cf0 , -33.dbamp, \cf4 \\dur\cf0 , 5*60, \cf4 \\buffers\cf0 , ~buffers.collect(\{ \cf3 |buf|\cf0  buf.bufnum \}) ], 	target:\cf3 GroupManager\cf0 .get.synths );\
 \
 			2.wait;\
-			block(\{ \cf4 |break|\cf3 \
-				\cf4 inf\cf3 .do(\{\
-					\cf4 var\cf3  now;\
-					now = \cf4 thisThread\cf3 .beats - starttime;\
+			block(\{ \cf3 |break|\cf0 \
+				\cf3 inf\cf0 .do(\{\
+					\cf3 var\cf0  now;\
+					now = \cf3 thisThread\cf0 .beats - starttime;\
 					\
 					(now > totalDur).if(\{\
-						\cf6 "SYNCHRONY ENDING - CANON"\cf3 .postln;\
-						\cf2 //~this.cleanUp\cf3 \
+						\cf5 "SYNCHRONY ENDING - CANON"\cf0 .
+\f1\fs24 log(\cf6 \\
+\f2 \cf4 miroStatus, 1
+\f1 \cf0 )
+\f0\fs22 ;\
+						\cf2 //~this.cleanUp\cf0 \
 						break.value();\
 						\});\
 					5.wait;\
@@ -110,13 +119,21 @@
 			\});\
 		\}, ~playClock);\
 \
-	\cf6 "SYNCHRONY PREPARED - CANON"\cf3 .postln;\
+	\cf5 "SYNCHRONY PREPARED - CANON"\cf0 .
+\f1\fs24 log(\cf6 \\
+\f2 \cf4 miroStatus, 1
+\f1 \cf0 )
+\f0\fs22 ;\
 \};\
 \
 ~play = \{\
 \
 	~playTask.play;\
-	\cf6 "SYNCHRONY PLAYING - CANON"\cf3 .postln;\
+	\cf5 "SYNCHRONY PLAYING - CANON"\cf0 .
+\f1\fs24 log(\cf6 \\
+\f2 \cf4 miroStatus, 1
+\f1 \cf0 )
+\f0\fs22 ;\
 \
 \};\
 \
@@ -125,12 +142,16 @@
 	~synth.free;\
 	~playClock.clear;\
 	~playTask.stop.reset;\
-	~buffers.do(\{ \cf4 |buf|\cf3  buf.close \});\
-	~buffers.do(\{ \cf4 |buf|\cf3  buf.free \});\
-	~buffers = ~playTask = ~playClock = ~synth = \cf4 nil\cf3 ;\
-	\cf6 "SYNCHRONY FREEING - CANON"\cf3 .postln;\
+	~buffers.do(\{ \cf3 |buf|\cf0  buf.close \});\
+	~buffers.do(\{ \cf3 |buf|\cf0  buf.free \});\
+	~buffers = ~playTask = ~playClock = ~synth = \cf3 nil\cf0 ;\
+	\cf5 "SYNCHRONY FREEING - CANON"\cf0 .
+\f1\fs24 log(\cf6 \\
+\f2 \cf4 miroStatus, 1
+\f1 \cf0 )
+\f0\fs22 ;\
 \
 \};\
 \
-\cf4 MiroEnvironment\cf3 .get(\cf5 \\sinc4_canon\cf3 ).pop;\
+\cf3 MiroEnvironment\cf0 .get(\cf4 \\sinc4_canon\cf0 ).pop;\
 \cf2 //MiroEnvironment.gui;}
