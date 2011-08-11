@@ -1,5 +1,5 @@
 VirtualSpeakerArrayUI {
-	var <>window, backView, backImage, speakerIcons, listenerIcon, volumeControl, movementButton;
+	var <>window, backView, backImage, speakerIcons, listenerIcon, volumeSpec, volumeControl, movementButton;
 	var <>speakerArray;
 	var speakersChanged=false, listenerChanged=false;
 	
@@ -87,15 +87,24 @@ VirtualSpeakerArrayUI {
 					{ speakerArray.listenerAngle = (speakerArray.listenerAngle+0.05).mod(1) };
 			});
 		backView.resize_(5);
-		volumeControl = EZSlider( window, Rect(10,10,300,20), "amp", 
-			ControlSpec( -20, 40, default:0, units:"dB"), action:{
+		volumeSpec = ControlSpec( -20, 40, default:0, units:"dB");
+		
+		volumeControl = SmoothSlider( window, Rect(10,10,300,20) )
+			.background_(Color(0.6, 0.7, 0.6, 0.7))
+			.hiliteColor_(Color(0.6, 0.9, 0.6, 1.0))
+			.border_(1.3)
+			.borderColor_(Color.grey(0.2))
+			.value_(volumeSpec.unmap(volumeSpec.default))
+			.action_({
 				| slider |
-				speakerArray.amp = slider.value.dbamp;
-			}, unitWidth:20);
+				slider.string = volumeSpec.map(slider.value).round(0.01).asString + "dB";
+				speakerArray.amp = volumeSpec.map(slider.value).dbamp.postln;
+			});
 			
-		movementButton = SCButton( window, Rect(310,10,160,20) )
-			.states_([["Movement: instant", Color.black, Color.grey],
-					["Movement: walk", Color.blue, Color.grey]])
+		movementButton = RoundButton( window, Rect(330,10,160,20) )
+			.radius_(2).border_(1.2).extrude_(false)
+			.states_([["Movement: instant", Color.black, Color.grey(0.8)],
+					["Movement: walk", Color.blue, Color.grey(0.8)]])
 			.action_({
 				|view|
 				if( view.value==0, {

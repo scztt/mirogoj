@@ -1,7 +1,8 @@
 MiroEnvironment : Environment {
-	classvar <environments, meTitles;
+	classvar <environments, <meTitles, <>executingPath;
 	var <initialized=false, <prepared=false, <playing=false;
 	var <name, <resources, resourceClasses, <cleanupCondition, <playNextCondition, <prepareNextCondition, <preparedCondition=0;
+	var <filepath;
 
 	*initClass {
 		environments = IdentityDictionary.new;
@@ -41,24 +42,33 @@ MiroEnvironment : Environment {
 		names.flatten.do({
 			| key |
 			var value = environments[ key ];
-			meTitles[key] = SCStaticText( window, Rect( 5, yPos, 280-10, 20 ))
-				.stringColor_( Color.grey )
-				.string_( key );
-			yPos = yPos+18; 
-			SCButton( window, Rect( xPos, yPos, 60, 20))
-				.states_([["init", Color.black, Color.grey(0.4)]])
+			meTitles[key] = RoundButton( window, Rect( 5, yPos, 280-10, 22 ))
+				.font_(Font("Helvetica-Bold", 14))
+				.canFocus_(false)
+				.radius_(0).extrude_(false).border_(0)
+				.states_([[key.asString, Color.grey, Color.clear]])
+				.action_({
+					Document.open(MiroEnvironment.get(key).filepath);
+				});
+			yPos = yPos+20; 
+			RoundButton( window, Rect( xPos, yPos, 60, 20))
+				.radius_(2).border_(1.2).extrude_(false)
+				.states_([["init", Color.black, Color.grey(0.8)]])
 				.action_({ value.initialize() });
 			xPos = xPos + 65;
-			SCButton( window, Rect( xPos, yPos, 60, 20))
-				.states_([["prep", Color.yellow(0.6), Color.grey(0.4)]])
+			RoundButton( window, Rect( xPos, yPos, 60, 20))
+				.radius_(2).border_(1.2).extrude_(false)
+				.states_([["prep", Color.yellow(0.46), Color.grey(0.8)]])
 				.action_({ value.prepare() });
 			xPos = xPos + 65;
-			SCButton( window, Rect( xPos, yPos, 60, 20))
-				.states_([["play", Color.green(0.6), Color.grey(0.4)]])
+			RoundButton( window, Rect( xPos, yPos, 60, 20))
+				.radius_(2).border_(1.2).extrude_(false)
+				.states_([["play", Color.green(0.6), Color.grey(0.8)]])
 				.action_({ value.play() });
 			xPos = xPos + 65;
-			SCButton( window, Rect( xPos, yPos, 60, 20))
-				.states_([["free", Color.red(0.6), Color.grey(0.4)]])
+			RoundButton( window, Rect( xPos, yPos, 60, 20))
+				.radius_(2).border_(1.2).extrude_(false)
+				.states_([["free", Color.red(0.6), Color.grey(0.8)]])
 				.action_({ value.free() });
 			yPos = yPos+26; xPos = 5; 
 		});
@@ -71,13 +81,16 @@ MiroEnvironment : Environment {
 			while({ window.isClosed.not }, {
 				names.flatten.do({
 					|key|
+					var title, color;
 					var value = environments[key];
-					meTitles[key].stringColor = case
+					title = meTitles[key];
+					color = case
 						{ value.isNil } { Color.grey }
 						{ value.playing } { Color.green(0.9) }
 						{ value.prepared } { Color.yellow(0.9) }
 						{ value.initialized } { Color.black }
-						{ true } { Color.grey }
+						{ true } { Color.grey };
+					title.states = [ title.states[0].put(1, color) ]
 				});
 				0.5.wait;	
 			})
@@ -95,6 +108,7 @@ MiroEnvironment : Environment {
 		this.class.environments[ name ] = this;
 		resources = Dictionary.new;	
 		resourceClasses = [ Bus, CtkBus, Node, CtkNode, Task, NodeProxy ];
+		filepath = this.class.executingPath;
 		this.put( \this, this );
 	}
 	

@@ -1,12 +1,12 @@
 MiroLog {
-	classvar <logWindows, <logStrings, <logFormatters, <defaultFormatter;
+	classvar <logWindows, <logStrings, <logFormatters;
 	classvar <clock;
 	
 	*initClass {
 		logWindows = IdentityDictionary.new;
 		logStrings = IdentityDictionary.new;
 		logFormatters = IdentityDictionary.new;
-		defaultFormatter = {
+		logFormatters[ \levels ] = {
 			| string |
 			format("(%)\t%", this.getTime().asTimeString(1), string )
 		};
@@ -29,16 +29,18 @@ MiroLog {
 	
 	*getWindow {
 		| name=\default |
-		var refresher, newName;
+		var refresher;
 		logWindows[ name ].isNil.if({
-			newName = "Log:" + name.asString();
-			logWindows[ name ] = Document.allDocuments.detect({ |d| d.name==newName }) ?? {
-				Document.new( newName )
-					.background_(Color.grey(0.8))
-					.bounds_(Rect(100,100,300,500))
+			refresher = Routine({
+				while( logWindows[ name ].notNil, {
+					
+				})
+			});
+			logWindows[ name ] = Document.new( name.asString() )
+					.background_(Color.grey(0.8).alpha_(0.95))
+					.bounds_(Rect(10,SCWindow.screenBounds.height-10-500,300,500))
 					.string_( this.getString(name) )
-					.onClose_({ |d| logWindows[ name ] = nil })
-				};
+				.onClose_({ |d| logWindows[ name ] = nil });
 		});
 		^logWindows[ name ].front
 	}
@@ -53,23 +55,37 @@ MiroLog {
 	
 	*postln {
 		| name=\default, string |
-		var logWindow, formatter;
-		
-		logWindow = logWindows[ name ];
-		formatter = logFormatters[ name ] ? defaultFormatter;
-		string = formatter.value(string);
-		if( logWindow.notNil, {
-			logWindow.insertTextRange("\n" + string, 999999999999, 1);
-			logWindow.selectRange(logWindow.string.size);
-		});
-		
-		logStrings[ name ] = (logStrings[name] ? "") + "\n" + string;
+		var logWindow, logString, formatter;
+		{
+			logWindow = logWindows[ name ];
+			
+			formatter = logFormatters[ name ].notNil.if({
+				string = logFormatters[ name ].value( string );
+				if( string.size > 1000000, {
+					string = string.copyRange( string.size-50000, string.size );
+					logWindow.notNil.if({ logWindow.string_(string) });	
+				})
+			});
+			if( logWindow.notNil, {
+				logWindow.insertTextRange("\n" + string + "\n", 999999999999, 1);
+				logWindow.selectRange(logWindow.string.size);
+			},{
+			logStrings[ name ] = (logStrings[name] ? "") + "\n" + string;
+			})
+		}.defer;	
 	}
 }
 
 +String {
 	log {
-		| name=\default |
-		{ MiroLog.postln( name, this ) }.defer;
+		| name=\default, indent=0 |
+		MiroLog.postln( name, ("\t" ! indent).join ++ this )
+	}
+}
+
++Object {
+	log {
+		| name, indent |
+		this.asString.log(name, indent)
 	}
 }
